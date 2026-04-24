@@ -1,4 +1,4 @@
-# Architecture: honcho-ui
+# Architecture: openconcho
 
 ## Overview
 

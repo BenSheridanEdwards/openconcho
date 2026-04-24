@@ -36,3 +36,7 @@ dist-ssr
 # TypeScript build info
 *.tsbuildinfo
 .tanstack/
+
+# Tauri
+packages/desktop/src-tauri/target/
+packages/desktop/src-tauri/gen/

@@ -8,9 +8,8 @@ on:
 
 jobs:
   check:
-    name: Lint, type-check & test
+    name: Lint, type-check, test & build
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -25,14 +24,4 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm lint
-        name: Biome lint
-
-      - run: pnpm exec tsc --noEmit -p tsconfig.app.json
-        name: Type check
-
-      - run: pnpm test
-        name: Tests
-
-      - run: pnpm build
-        name: Production build
+      - run: pnpm turbo lint typecheck test build --filter=@openconcho/web

@@ -1,4 +1,4 @@
-# honcho-ui
+# openconcho
 
 Frontend UI for self-hosted Honcho instances — browse memories, peers, sessions, conclusions, and chat with memory context.
 
@@ -40,7 +40,7 @@ Read `docs/architecture.md` for component overview, data flow, and design decisi
 
 ## Key Constraints
 
-- **No hardcoded URLs** — all connection config lives in `localStorage` under `honcho-ui:config`
+- **No hardcoded URLs** — all connection config lives in `localStorage` under `openconcho:config`
 - **TanStack Router flat-route params** — always cast `params` as `as never` at `navigate()` and `<Link>` callsites
 - **`framer-motion` Variants typing** — import `type Variants` and annotate objects; never use `as const` on variant objects
 - **Auth is optional** — token header only sent when non-empty; `checkConnection()` detects if auth is required

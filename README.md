@@ -28,8 +28,8 @@ A clean, fast frontend for browsing and chatting with a self-hosted [Honcho](htt
 ### Install & run
 
 ```bash
-git clone https://github.com/offendingcommit/honcho-ui.git
-cd honcho-ui
+git clone https://github.com/offendingcommit/openconcho.git
+cd openconcho
 pnpm install
 pnpm dev
 ```
@@ -84,8 +84,8 @@ pnpm generate:api
 
 ## Privacy
 
-- Base URL and token are stored in `localStorage` under `honcho-ui:config`
-- Theme preference is stored in `localStorage` under `honcho-ui:theme`
+- Base URL and token are stored in `localStorage` under `openconcho:config`
+- Theme preference is stored in `localStorage` under `openconcho:theme`
 - No telemetry, no analytics, no external requests beyond your configured Honcho instance
 
 ## Contributing

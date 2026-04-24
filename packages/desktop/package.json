@@ -1,0 +1,15 @@
+{
+  "name": "@openconcho/desktop",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@openconcho/web": "workspace:*"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}
