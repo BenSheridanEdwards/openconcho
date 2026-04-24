@@ -1,0 +1,12 @@
+{
+  "fire_tools_version": "0.1.0",
+  "initialized_at": "2026-04-24T00:00:00Z",
+  "profile": "other",
+  "features": ["pnpm", "biome", "vitest", "zod"],
+  "deviations": [
+    "No SQL database (Honcho API handles persistence)",
+    "No turborepo (single package)",
+    "No commitlint/husky (small solo project)",
+    "No semantic-release (not publishing to npm)"
+  ]
+}

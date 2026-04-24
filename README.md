@@ -1,73 +1,97 @@
-# React + TypeScript + Vite
+# Honcho UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A clean, fast frontend for browsing and chatting with a self-hosted [Honcho](https://github.com/plastic-labs/honcho) instance.
 
-Currently, two official plugins are available:
+> **Privacy-first**: all connection details (base URL, optional token) are stored locally in your browser — never sent anywhere except directly to your Honcho instance.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dashboard** — workspace count and queue status at a glance, auto-refreshes every 10 s
+- **Workspaces** — paginated list with per-workspace navigation
+- **Peers** — browse peers, view representations, context, and peer cards
+- **Sessions** — paginated message history with summaries and context
+- **Conclusions** — semantic search across conclusions with observer/subject display
+- **Chat** — conversational interface that sends messages through Honcho's chat endpoint with memory context
+- **Dark / light mode** — persisted per browser, instant toggle
+- **Optional auth** — token field is optional; a connection health check auto-detects whether auth is required
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js ≥ 20
+- pnpm ≥ 9
+- A running Honcho instance (local or remote)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Install & run
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/offendingcommit/honcho-ui.git
+cd honcho-ui
+pnpm install
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:5173 — you'll be prompted to enter your Honcho URL.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Connect to your instance
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Enter the base URL of your Honcho instance (e.g. `http://localhost:8000`)
+2. Optionally enter an API token if your instance requires auth
+3. Click **Test connection** — the UI will tell you if auth is needed
+4. Click **Save** — you're in
+
+### Build for production
+
+```bash
+pnpm build
+# Output in dist/ — serve with any static host
 ```
+
+## Stack
+
+| Layer | Library |
+|-------|---------|
+| Framework | React 19 + Vite 8 |
+| Routing | TanStack Router v1 (file-based) |
+| Data fetching | TanStack Query v5 |
+| API client | openapi-fetch (typed from `openapi.json`) |
+| Styling | Tailwind CSS v4 + CSS custom properties |
+| Animation | framer-motion |
+| Icons | lucide-react |
+| Lint / format | Biome |
+| Tests | Vitest + Testing Library |
+
+## Development
+
+```bash
+pnpm dev          # dev server with HMR
+pnpm lint:fix     # Biome lint + format
+pnpm test         # run tests
+pnpm generate:api # regenerate src/api/schema.d.ts from openapi.json
+```
+
+## Regenerating API types
+
+If your Honcho instance is updated, grab a fresh `openapi.json` and run:
+
+```bash
+curl http://your-honcho-url/openapi.json -o openapi.json
+pnpm generate:api
+```
+
+## Privacy
+
+- Base URL and token are stored in `localStorage` under `honcho-ui:config`
+- Theme preference is stored in `localStorage` under `honcho-ui:theme`
+- No telemetry, no analytics, no external requests beyond your configured Honcho instance
+
+## Contributing
+
+Issues and PRs welcome. Open an issue first for significant changes.
+
+## License
+
+MIT
