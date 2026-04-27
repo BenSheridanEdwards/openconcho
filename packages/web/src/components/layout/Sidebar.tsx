@@ -1,6 +1,17 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Boxes, Brain, ChevronRight, LayoutDashboard, Moon, Settings, Sun } from "lucide-react";
+import {
+	Boxes,
+	Brain,
+	ChevronRight,
+	Eye,
+	EyeOff,
+	LayoutDashboard,
+	Moon,
+	Settings,
+	Sun,
+} from "lucide-react";
+import { useDemo } from "@/hooks/useDemo";
 import { useTheme } from "@/hooks/useTheme";
 import { loadConfig } from "@/lib/config";
 import { COLOR } from "@/lib/constants";
@@ -15,6 +26,7 @@ export function Sidebar() {
 	const matchRoute = useMatchRoute();
 	const config = loadConfig();
 	const { theme, toggle } = useTheme();
+	const { demo, toggle: toggleDemo } = useDemo();
 
 	return (
 		<motion.aside
@@ -110,23 +122,42 @@ export function Sidebar() {
 				<p className="text-xs font-mono hidden sm:block" style={{ color: "var(--text-4)" }}>
 					API v3
 				</p>
-				<button
-					type="button"
-					onClick={toggle}
-					className="w-7 h-7 rounded-md flex items-center justify-center transition-colors mx-auto sm:mx-0"
-					style={{
-						background: "var(--surface)",
-						border: "1px solid var(--border)",
-						color: "var(--text-3)",
-					}}
-					title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-				>
-					{theme === "dark" ? (
-						<Sun className="w-3.5 h-3.5" strokeWidth={1.5} />
-					) : (
-						<Moon className="w-3.5 h-3.5" strokeWidth={1.5} />
-					)}
-				</button>
+				<div className="flex items-center gap-1.5 mx-auto sm:mx-0">
+					<button
+						type="button"
+						onClick={toggleDemo}
+						className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+						style={{
+							background: demo ? "var(--accent-dim)" : "var(--surface)",
+							border: `1px solid ${demo ? "var(--accent-border)" : "var(--border)"}`,
+							color: demo ? "var(--accent-text)" : "var(--text-3)",
+						}}
+						title={demo ? "Disable demo mode" : "Enable demo mode"}
+					>
+						{demo ? (
+							<EyeOff className="w-3.5 h-3.5" strokeWidth={1.5} />
+						) : (
+							<Eye className="w-3.5 h-3.5" strokeWidth={1.5} />
+						)}
+					</button>
+					<button
+						type="button"
+						onClick={toggle}
+						className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+						style={{
+							background: "var(--surface)",
+							border: "1px solid var(--border)",
+							color: "var(--text-3)",
+						}}
+						title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+					>
+						{theme === "dark" ? (
+							<Sun className="w-3.5 h-3.5" strokeWidth={1.5} />
+						) : (
+							<Moon className="w-3.5 h-3.5" strokeWidth={1.5} />
+						)}
+					</button>
+				</div>
 			</div>
 		</motion.aside>
 	);
