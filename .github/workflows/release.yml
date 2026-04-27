@@ -62,4 +62,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           releaseId: ${{ steps.get-release.outputs.release_id }}
+          beforeBuildCommand: pnpm turbo build --filter=@openconcho/web
           args: --target ${{ matrix.target }}
