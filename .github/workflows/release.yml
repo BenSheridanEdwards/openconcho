@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to build and upload artifacts for (e.g. v0.2.0)
+        required: true
+        type: string
 
 jobs:
   build:
@@ -26,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-22.04'
@@ -45,7 +53,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_ID=$(gh release view "${{ github.ref_name }}" --json databaseId --jq '.databaseId')
+          TAG=${{ github.event.inputs.tag || github.ref_name }}
+          RELEASE_ID=$(gh release view "$TAG" --json databaseId --jq '.databaseId')
           echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
 
       - uses: tauri-apps/tauri-action@v0
