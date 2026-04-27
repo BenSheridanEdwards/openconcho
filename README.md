@@ -5,7 +5,7 @@
 
   <p>
     <a href="https://github.com/offendingcommit/openconcho/actions/workflows/ci.yml">
-      <img src="https://github.com/offendingcommit/openconcho/actions/workflows/ci.yml/badge.svg" alt="CI" />
+      <img src="https://github.com/offendingcommit/openconcho/actions/workflows/ci.yml/badge.svg?branch=main&event=push" alt="CI" />
     </a>
     <a href="https://github.com/offendingcommit/openconcho/releases/latest">
       <img src="https://img.shields.io/github/v/release/offendingcommit/openconcho" alt="Latest release" />
