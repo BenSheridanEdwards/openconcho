@@ -36,9 +36,11 @@ import {
 	PageTitle,
 	SectionHeading,
 } from "@/components/ui/typography";
+import { useDemo } from "@/hooks/useDemo";
 import { COLOR } from "@/lib/constants";
 
 export function PeerDetail() {
+	const { mask } = useDemo();
 	const { workspaceId, peerId } = useParams({ strict: false }) as {
 		workspaceId: string;
 		peerId: string;
@@ -209,12 +211,12 @@ export function PeerDetail() {
 													}}
 												>
 													<div className="flex items-center gap-2 mb-1.5">
-														<Badge variant="blue">{r.peer_id ?? peerId}</Badge>
+														<Badge variant="blue">{mask(r.peer_id ?? peerId)}</Badge>
 														{r.created_at && (
 															<Caption>{new Date(r.created_at).toLocaleString()}</Caption>
 														)}
 													</div>
-													<Body className="whitespace-pre-wrap">{r.content}</Body>
+													<Body className="whitespace-pre-wrap">{mask(r.content)}</Body>
 												</div>
 											))
 										)}

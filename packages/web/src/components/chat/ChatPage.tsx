@@ -7,6 +7,7 @@ import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { SectionHeading } from "@/components/ui/typography";
+import { useDemo } from "@/hooks/useDemo";
 
 interface Message {
 	id: string;
@@ -15,6 +16,7 @@ interface Message {
 }
 
 export function ChatPage() {
+	const { mask } = useDemo();
 	const { workspaceId, peerId } = useParams({ strict: false }) as {
 		workspaceId: string;
 		peerId: string;
@@ -143,7 +145,7 @@ export function ChatPage() {
 											}
 								}
 							>
-								<p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+								<p className="whitespace-pre-wrap leading-relaxed">{mask(msg.content)}</p>
 							</div>
 						</motion.div>
 					))}

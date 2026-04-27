@@ -8,3 +8,7 @@ export function applyDemoMode(enabled: boolean): void {
 	document.documentElement.setAttribute("data-demo", String(enabled));
 	localStorage.setItem(DEMO_KEY, String(enabled));
 }
+
+export function maskValue(value: string): string {
+	return value.replace(/\S/g, "*");
+}

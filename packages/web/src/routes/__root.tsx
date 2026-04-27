@@ -1,6 +1,7 @@
 import { createRootRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { DemoProvider } from "@/context/DemoContext";
 import { loadConfig } from "@/lib/config";
 import { applyTheme, getStoredTheme } from "@/lib/theme";
 
@@ -26,15 +27,17 @@ function RootLayout() {
 	if (!config) return null;
 
 	return (
-		<div
-			className="flex h-screen w-full overflow-hidden"
-			style={{ background: "var(--bg)", position: "relative", zIndex: 1 }}
-		>
-			<Sidebar />
-			<main className="flex-1 overflow-auto" style={{ position: "relative", zIndex: 1 }}>
-				<Outlet />
-			</main>
-		</div>
+		<DemoProvider>
+			<div
+				className="flex h-screen w-full overflow-hidden"
+				style={{ background: "var(--bg)", position: "relative", zIndex: 1 }}
+			>
+				<Sidebar />
+				<main className="flex-1 overflow-auto" style={{ position: "relative", zIndex: 1 }}>
+					<Outlet />
+				</main>
+			</div>
+		</DemoProvider>
 	);
 }
 

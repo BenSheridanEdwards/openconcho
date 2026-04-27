@@ -11,6 +11,7 @@ import { PageLoader } from "@/components/shared/LoadingSpinner";
 import { Pagination } from "@/components/shared/Pagination";
 import { SortControl, type SortDir } from "@/components/shared/SortControl";
 import { MonoCaption, PageTitle } from "@/components/ui/typography";
+import { useDemo } from "@/hooks/useDemo";
 import { COLOR } from "@/lib/constants";
 
 type Peer = components["schemas"]["Peer"];
@@ -45,6 +46,7 @@ const item: Variants = {
 };
 
 export function PeerList() {
+	const { mask } = useDemo();
 	const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
 	const [page, setPage] = useState(1);
 	const [sortField, setSortField] = useState("created_at");
@@ -246,7 +248,7 @@ export function PeerList() {
 												className="font-mono text-sm font-medium truncate"
 												style={{ color: COLOR.accentSoft }}
 											>
-												{peer.id}
+												{mask(peer.id)}
 											</span>
 											<ChevronRight
 												className="w-4 h-4 shrink-0 ml-2 opacity-30 group-hover:opacity-70 transition-opacity"

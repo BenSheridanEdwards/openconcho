@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Body, Caption, MonoCaption, Muted, PageTitle } from "@/components/ui/typography";
+import { useDemo } from "@/hooks/useDemo";
 import { COLOR } from "@/lib/constants";
 
 type Conclusion = components["schemas"]["Conclusion"];
@@ -49,6 +50,7 @@ const itemVariants = {
 };
 
 export function ConclusionBrowser() {
+	const { mask } = useDemo();
 	const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
 	const [page, setPage] = useState(1);
 	const [sortField, setSortField] = useState("created_at");
@@ -233,7 +235,7 @@ export function ConclusionBrowser() {
 								}}
 							>
 								<div className="flex items-start justify-between gap-3">
-									<Body className="whitespace-pre-wrap flex-1">{c.content}</Body>
+									<Body className="whitespace-pre-wrap flex-1">{mask(c.content)}</Body>
 									<Button
 										variant="ghost"
 										size="icon"
@@ -250,12 +252,12 @@ export function ConclusionBrowser() {
 								>
 									<div className="flex items-center gap-1.5">
 										<Eye className="w-3 h-3" style={{ color: "var(--text-4)" }} strokeWidth={1.5} />
-										<MonoCaption>{c.observer_id}</MonoCaption>
+										<MonoCaption>{mask(c.observer_id)}</MonoCaption>
 									</div>
 									{c.observed_id && (
 										<div className="flex items-center gap-1">
 											<Caption>→</Caption>
-											<MonoCaption>{c.observed_id}</MonoCaption>
+											<MonoCaption>{mask(c.observed_id)}</MonoCaption>
 										</div>
 									)}
 									{c.session_id && (
@@ -266,7 +268,7 @@ export function ConclusionBrowser() {
 											className="flex items-center gap-1 text-xs font-mono hover:underline"
 											style={{ color: "var(--accent-text)" }}
 										>
-											{c.session_id}
+											{mask(c.session_id)}
 										</Link>
 									)}
 									{c.created_at && (

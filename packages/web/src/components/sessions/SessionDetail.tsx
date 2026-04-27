@@ -30,6 +30,7 @@ import {
 	PageTitle,
 	SectionHeading,
 } from "@/components/ui/typography";
+import { useDemo } from "@/hooks/useDemo";
 
 type Message = components["schemas"]["Message"];
 type SessionSummaries = components["schemas"]["SessionSummaries"];
@@ -37,6 +38,7 @@ type Summary = components["schemas"]["Summary"];
 type Tab = "messages" | "summaries" | "context" | "peers";
 
 export function SessionDetail() {
+	const { mask } = useDemo();
 	const { workspaceId, sessionId } = useParams({ strict: false }) as {
 		workspaceId: string;
 		sessionId: string;
@@ -207,8 +209,8 @@ export function SessionDetail() {
 											className="text-sm py-2"
 											style={{ borderBottom: "1px solid var(--border)", color: "var(--text-2)" }}
 										>
-											{r.peer_id && <Badge variant="blue">{r.peer_id}</Badge>}
-											<p className="mt-1 whitespace-pre-wrap">{r.content}</p>
+											{r.peer_id && <Badge variant="blue">{mask(r.peer_id)}</Badge>}
+											<p className="mt-1 whitespace-pre-wrap">{mask(r.content)}</p>
 										</div>
 									))
 								)}
@@ -269,14 +271,14 @@ export function SessionDetail() {
 											>
 												<div className="flex items-center gap-2 mb-2 flex-wrap">
 													<Badge variant={msg.peer_id ? "blue" : "default"}>
-														{msg.peer_id ?? "system"}
+														{msg.peer_id ? mask(msg.peer_id) : "system"}
 													</Badge>
 													{msg.token_count != null && <Caption>{msg.token_count} tokens</Caption>}
 													{msg.created_at && (
 														<Caption>{new Date(msg.created_at).toLocaleString()}</Caption>
 													)}
 												</div>
-												<Body className="whitespace-pre-wrap">{msg.content}</Body>
+												<Body className="whitespace-pre-wrap">{mask(msg.content)}</Body>
 											</div>
 										))}
 									</div>
@@ -414,6 +416,7 @@ function SessionPeersTab({
 }
 
 function SummaryCard({ label, summary }: { label: string; summary: Summary }) {
+	const { mask } = useDemo();
 	return (
 		<div
 			className="rounded-xl p-4"
@@ -436,7 +439,7 @@ function SummaryCard({ label, summary }: { label: string; summary: Summary }) {
 					)}
 				</div>
 			</div>
-			<Body className="whitespace-pre-wrap">{summary.content}</Body>
+			<Body className="whitespace-pre-wrap">{mask(summary.content)}</Body>
 		</div>
 	);
 }

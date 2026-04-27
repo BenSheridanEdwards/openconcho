@@ -5,12 +5,6 @@
 @import "@fontsource/dm-sans/500.css";
 @import "@fontsource/dm-sans/600.css";
 
-/* Demo mode — blur main content, sidebar remains interactive */
-[data-demo="true"] main {
-	filter: blur(6px);
-	user-select: none;
-}
-
 /* ─── Tailwind v4 theme bridge ─── */
 @theme inline {
 	--color-background: var(--bg);
