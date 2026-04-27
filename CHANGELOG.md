@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/offendingcommit/openconcho/compare/v0.5.0...v0.5.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* **release:** route tauri build through turborepo task graph ([6df9f02](https://github.com/offendingcommit/openconcho/commit/6df9f024926a653d53b287a85fb5645d193455f9)), closes [desktop#tauri](https://github.com/desktop/issues/tauri) [web#build](https://github.com/web/issues/build)
+
 # [0.5.0](https://github.com/offendingcommit/openconcho/compare/v0.4.0...v0.5.0) (2026-04-27)
 
 
