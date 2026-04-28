@@ -1,3 +1,10 @@
+## [0.5.2](https://github.com/offendingcommit/openconcho/compare/v0.5.1...v0.5.2) (2026-04-28)
+
+
+### Bug Fixes
+
+* **ci:** make sure we build web before we build the app ([c3b4e58](https://github.com/offendingcommit/openconcho/commit/c3b4e58816f48420ca4970ba1989316690c60391))
+
 ## [0.5.1](https://github.com/offendingcommit/openconcho/compare/v0.5.0...v0.5.1) (2026-04-27)
 
 
