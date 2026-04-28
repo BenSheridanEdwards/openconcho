@@ -1,35 +1,36 @@
 {
-  "$schema": "https://schema.tauri.app/config/2.json",
-  "productName": "OpenConcho",
-  "identifier": "com.offendingcommit.openconcho",
-  "build": {
-    "frontendDist": "../../web/dist",
-    "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "pnpm --filter @openconcho/web dev"
-  },
-  "bundle": {
-    "active": true,
-    "targets": "all",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ]
-  },
-  "app": {
-    "windows": [
-      {
-        "title": "OpenConcho",
-        "width": 1280,
-        "height": 800,
-        "minWidth": 800,
-        "minHeight": 600
-      }
-    ],
-    "security": {
-      "csp": null
-    }
-  }
+	"$schema": "https://schema.tauri.app/config/2.json",
+	"productName": "OpenConcho",
+	"identifier": "com.offendingcommit.openconcho",
+	"build": {
+		"frontendDist": "../../web/dist",
+		"devUrl": "http://localhost:5173",
+		"beforeDevCommand": "pnpm turbo --filter @openconcho/web dev",
+		"beforeBuildCommand": "pnpm turbo --filter @openconcho/web build"
+	},
+	"bundle": {
+		"active": true,
+		"targets": "all",
+		"icon": [
+			"icons/32x32.png",
+			"icons/128x128.png",
+			"icons/128x128@2x.png",
+			"icons/icon.icns",
+			"icons/icon.ico"
+		]
+	},
+	"app": {
+		"windows": [
+			{
+				"title": "OpenConcho",
+				"width": 1280,
+				"height": 800,
+				"minWidth": 800,
+				"minHeight": 600
+			}
+		],
+		"security": {
+			"csp": null
+		}
+	}
 }
