@@ -15,6 +15,10 @@
 		"test": {
 			"inputs": ["src/**", "vitest.config.*", "package.json"]
 		},
+		"test:e2e": {
+			"cache": false,
+			"inputs": ["e2e/**", "src/**", "playwright.config.*", "package.json"]
+		},
 		"cargo-check": {
 			"inputs": ["src-tauri/src/**", "src-tauri/Cargo.toml", "src-tauri/Cargo.lock"],
 			"outputs": []

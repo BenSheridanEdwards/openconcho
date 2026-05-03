@@ -1,46 +1,36 @@
-import { createRootRoute, Outlet, useRouter } from "@tanstack/react-router";
+import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { DemoProvider } from "@/context/DemoContext";
 import { loadConfig } from "@/lib/config";
 import { applyTheme, getStoredTheme } from "@/lib/theme";
 
-function RootLayout() {
-	const config = loadConfig();
-	const router = useRouter();
-	const isSettings = router.state.location.pathname === "/settings";
+const SETTINGS_PATH = "/settings";
 
+function RootLayout() {
 	useEffect(() => {
 		applyTheme(getStoredTheme());
 	}, []);
 
-	useEffect(() => {
-		if (!config && !isSettings) {
-			router.navigate({ to: "/settings" as never });
-		}
-	}, [config, isSettings, router]);
-
-	if (isSettings) {
-		return <Outlet />;
-	}
-
-	if (!config) return null;
-
 	return (
-		<DemoProvider>
-			<div
-				className="flex h-screen w-full overflow-hidden"
-				style={{ background: "var(--bg)", position: "relative", zIndex: 1 }}
-			>
-				<Sidebar />
-				<main className="flex-1 overflow-auto" style={{ position: "relative", zIndex: 1 }}>
-					<Outlet />
-				</main>
-			</div>
-		</DemoProvider>
+		<div
+			className="flex h-screen w-full overflow-hidden"
+			style={{ background: "var(--bg)", position: "relative", zIndex: 1 }}
+		>
+			<Sidebar />
+			<main className="flex-1 overflow-auto" style={{ position: "relative", zIndex: 1 }}>
+				<Outlet />
+			</main>
+		</div>
 	);
 }
 
 export const Route = createRootRoute({
+	beforeLoad: ({ location }) => {
+		// Redirect to settings synchronously when no config is present, so the
+		// first paint already shows the settings form instead of a blank screen.
+		if (location.pathname !== SETTINGS_PATH && !loadConfig()) {
+			throw redirect({ to: SETTINGS_PATH as never });
+		}
+	},
 	component: RootLayout,
 });
