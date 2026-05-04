@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/offendingcommit/openconcho/compare/v0.6.0...v0.7.0) (2026-05-04)
+
+
+### Features
+
+* deep linking for hosted URLs and openconcho:// scheme ([578c8f4](https://github.com/offendingcommit/openconcho/commit/578c8f4c46f470f450414332ee2290edf2ecd344))
+
 # [0.6.0](https://github.com/offendingcommit/openconcho/compare/v0.5.3...v0.6.0) (2026-05-04)
 
 
