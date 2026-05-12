@@ -1,3 +1,11 @@
+## [0.7.1](https://github.com/offendingcommit/openconcho/compare/v0.7.0...v0.7.1) (2026-05-12)
+
+
+### Bug Fixes
+
+* improve dark mode accessibility contrast ([7827438](https://github.com/offendingcommit/openconcho/commit/7827438d9203038c0f2396a3675b6a159229c584))
+* show structured page placeholders while loading ([3075e4a](https://github.com/offendingcommit/openconcho/commit/3075e4a005af58e484b0c07074b9423c734946f9))
+
 # [0.7.0](https://github.com/offendingcommit/openconcho/compare/v0.6.0...v0.7.0) (2026-05-04)
 
 
