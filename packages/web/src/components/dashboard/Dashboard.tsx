@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useQueueStatus, useWorkspaces } from "@/api/queries";
 import type { components } from "@/api/schema.d.ts";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { PageLoader } from "@/components/shared/LoadingSpinner";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Body, Muted, PageTitle, SectionHeading } from "@/components/ui/typography";
 import { useDemo } from "@/hooks/useDemo";
 import { COLOR } from "@/lib/constants";
@@ -182,7 +182,7 @@ export function Dashboard() {
 			</motion.div>
 
 			<ErrorAlert error={error instanceof Error ? error : null} />
-			{isLoading && <PageLoader />}
+			{isLoading && <DashboardSkeleton />}
 
 			{!isLoading && workspaces.length > 0 && (
 				<div className="space-y-4">
@@ -262,6 +262,67 @@ export function Dashboard() {
 					<Muted>No workspaces found.</Muted>
 				</div>
 			)}
+		</div>
+	);
+}
+
+function DashboardSkeleton() {
+	return (
+		<div className="space-y-4" aria-hidden="true">
+			<div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+				{Array.from({ length: 4 }).map((_, index) => (
+					<div key={index} className="rounded-xl p-4 theme-card">
+						<Skeleton accent={index === 0} className="h-8 w-16 rounded-lg" />
+						<Skeleton className="mt-3 h-3 w-20 rounded" />
+					</div>
+				))}
+			</div>
+
+			<div className="rounded-xl theme-card overflow-hidden">
+				<div
+					className="flex items-center gap-2 px-4 py-3"
+					style={{ borderBottom: "1px solid var(--border)" }}
+				>
+					<Skeleton accent className="h-4 w-4 rounded" />
+					<Skeleton className="h-4 w-28 rounded" />
+					<Skeleton className="ml-1 h-3 w-32 rounded" />
+				</div>
+
+				<div className="overflow-x-auto">
+					<table className="w-full text-xs">
+						<thead>
+							<tr style={{ background: "var(--bg-3)" }}>
+								{Array.from({ length: 6 }).map((_, index) => (
+									<th key={index} className="px-4 py-2 text-left">
+										<Skeleton className="h-3 w-14 rounded" />
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{Array.from({ length: 5 }).map((_, rowIndex) => (
+								<tr key={rowIndex} style={{ borderTop: "1px solid var(--border)" }}>
+									<td className="px-4 py-3">
+										<Skeleton accent className="h-3 w-28 rounded" />
+									</td>
+									<td className="px-4 py-3">
+										<div className="flex justify-end">
+											<Skeleton className="h-3 w-20 rounded" />
+										</div>
+									</td>
+									{Array.from({ length: 4 }).map((__, cellIndex) => (
+										<td key={cellIndex} className="px-4 py-3">
+											<div className="flex justify-end">
+												<Skeleton className="h-3 w-8 rounded" />
+											</div>
+										</td>
+									))}
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	);
 }

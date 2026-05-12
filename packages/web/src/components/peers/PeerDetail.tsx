@@ -26,6 +26,7 @@ import { JsonViewer } from "@/components/shared/JsonViewer";
 import { PageLoader } from "@/components/shared/LoadingSpinner";
 import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer";
 import { PeerCardViewer } from "@/components/shared/PeerCardViewer";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import {
@@ -143,7 +144,7 @@ export function PeerDetail() {
 
 			<div className="mt-6 space-y-4">
 				<ErrorAlert error={error instanceof Error ? error : null} />
-				{isLoading && <PageLoader />}
+				{isLoading && <PeerDetailSkeleton />}
 
 				{!isLoading && peer && (
 					<>
@@ -419,6 +420,48 @@ export function PeerDetail() {
 						</motion.div>
 					</>
 				)}
+			</div>
+		</div>
+	);
+}
+
+function PeerDetailSkeleton() {
+	return (
+		<div className="space-y-4" aria-hidden="true">
+			<div className="rounded-xl p-5 theme-card">
+				<Skeleton className="h-4 w-36 rounded" />
+				<div className="mt-4 flex gap-2">
+					<Skeleton className="h-10 flex-1 rounded-lg" />
+					<Skeleton accent className="h-10 w-24 rounded-lg" />
+				</div>
+			</div>
+
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+				{Array.from({ length: 2 }).map((_, index) => (
+					<div key={index} className="rounded-xl p-5 theme-card">
+						<div className="flex items-center justify-between mb-4">
+							<Skeleton className="h-4 w-28 rounded" />
+							<Skeleton className="h-8 w-16 rounded-lg" />
+						</div>
+						<Skeleton className="h-3 w-full rounded" />
+						<Skeleton className="mt-2 h-3 w-[92%] rounded" />
+						<Skeleton className="mt-2 h-3 w-[68%] rounded" />
+						<Skeleton className="mt-4 h-24 w-full rounded-lg" />
+					</div>
+				))}
+			</div>
+
+			<div className="rounded-xl p-5 theme-card">
+				<Skeleton className="h-4 w-24 rounded" />
+				<Skeleton className="mt-4 h-3 w-full rounded" />
+				<Skeleton className="mt-2 h-3 w-[95%] rounded" />
+				<Skeleton className="mt-2 h-3 w-[76%] rounded" />
+			</div>
+
+			<div className="rounded-xl theme-card overflow-hidden">
+				<div className="px-5 py-4">
+					<Skeleton className="h-4 w-20 rounded" />
+				</div>
 			</div>
 		</div>
 	);

@@ -6,8 +6,8 @@ import { useSessions } from "@/api/queries";
 import type { components } from "@/api/schema.d.ts";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { PageLoader } from "@/components/shared/LoadingSpinner";
 import { Pagination } from "@/components/shared/Pagination";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { SortControl, type SortDir } from "@/components/shared/SortControl";
 import { MonoCaption, PageTitle } from "@/components/ui/typography";
 import { useDemo } from "@/hooks/useDemo";
@@ -105,7 +105,7 @@ export function SessionList() {
 			</motion.div>
 
 			<ErrorAlert error={error instanceof Error ? error : null} />
-			{isLoading && <PageLoader />}
+			{isLoading && <SessionListSkeleton />}
 
 			{!isLoading && sessions.length === 0 && (
 				<EmptyState
@@ -201,6 +201,43 @@ export function SessionList() {
 					<Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 				</>
 			)}
+		</div>
+	);
+}
+
+function SessionListSkeleton() {
+	return (
+		<div aria-hidden="true">
+			<div className="space-y-2">
+				{Array.from({ length: 5 }).map((_, index) => (
+					<div
+						key={index}
+						className="rounded-xl px-5 py-4"
+						style={{
+							background: COLOR.cardBaseBg,
+							border: `1px solid ${COLOR.cardBaseBorder}`,
+						}}
+					>
+						<div className="flex items-center justify-between">
+							<Skeleton accent className="h-4 w-44 rounded" />
+							<div className="flex items-center gap-2">
+								{index % 2 === 0 && <Skeleton className="h-4 w-12 rounded-full" />}
+								<Skeleton className="h-4 w-4 rounded" />
+							</div>
+						</div>
+						<div className="mt-3 flex items-center gap-2">
+							<Skeleton className="h-3 w-3 rounded-full" />
+							<Skeleton className="h-3 w-28 rounded" />
+							<Skeleton className="h-5 w-16 rounded-md" />
+						</div>
+					</div>
+				))}
+			</div>
+			<div className="mt-4 flex items-center justify-between">
+				<Skeleton className="h-8 w-20 rounded-lg" />
+				<Skeleton className="h-4 w-16 rounded" />
+				<Skeleton className="h-8 w-20 rounded-lg" />
+			</div>
 		</div>
 	);
 }

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useCreateWebhook, useDeleteWebhook, useTestWebhook, useWebhooks } from "@/api/queries";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { PageLoader } from "@/components/shared/LoadingSpinner";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Body, Muted, PageTitle, SectionHeading } from "@/components/ui/typography";
@@ -79,7 +79,6 @@ export function WebhookManager({ workspaceId }: Props) {
 
 			<div className="mt-8 space-y-4">
 				<ErrorAlert error={error instanceof Error ? error : null} />
-				{isLoading && <PageLoader />}
 
 				{/* Add webhook form */}
 				<motion.div
@@ -133,73 +132,73 @@ export function WebhookManager({ workspaceId }: Props) {
 				</AnimatePresence>
 
 				{/* Webhook list */}
-				{!isLoading && (
-					<motion.div
-						initial={{ opacity: 0, y: 8 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.1 }}
-						className="rounded-xl theme-card overflow-hidden"
-					>
-						{list.length === 0 ? (
-							<div className="p-8 text-center">
-								<Webhook
-									className="w-8 h-8 mx-auto mb-2 opacity-20"
-									style={{ color: "var(--text-3)" }}
-									strokeWidth={1.5}
-								/>
-								<Muted>No webhook endpoints yet.</Muted>
-							</div>
-						) : (
-							<div className="divide-y" style={{ borderColor: "var(--border)" }}>
-								{list.map((wh, i) => (
-									<motion.div
-										key={(wh as { id: string }).id}
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										transition={{ delay: i * 0.04 }}
-										className="flex items-center justify-between px-5 py-3 gap-4"
-									>
-										<div className="min-w-0 flex-1">
-											<div className="flex items-center gap-1.5">
-												<span
-													className="text-xs font-mono truncate"
-													style={{ color: "var(--accent-text)" }}
-												>
-													{mask((wh as { url: string }).url)}
-												</span>
-												<button
-													type="button"
-													onClick={() => void open((wh as { url: string }).url)}
-													className="flex-shrink-0"
-													style={{
-														color: "var(--text-4)",
-														background: "none",
-														border: "none",
-														cursor: "pointer",
-														padding: 0,
-													}}
-												>
-													<ExternalLink className="w-3 h-3" strokeWidth={1.5} />
-												</button>
-											</div>
-											<span className="text-xs font-mono" style={{ color: "var(--text-4)" }}>
-												{mask((wh as { id: string }).id)}
+				<motion.div
+					initial={{ opacity: 0, y: 8 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.1 }}
+					className="rounded-xl theme-card overflow-hidden"
+				>
+					{isLoading ? (
+						<WebhookListSkeleton />
+					) : list.length === 0 ? (
+						<div className="p-8 text-center">
+							<Webhook
+								className="w-8 h-8 mx-auto mb-2 opacity-20"
+								style={{ color: "var(--text-3)" }}
+								strokeWidth={1.5}
+							/>
+							<Muted>No webhook endpoints yet.</Muted>
+						</div>
+					) : (
+						<div className="divide-y" style={{ borderColor: "var(--border)" }}>
+							{list.map((wh, i) => (
+								<motion.div
+									key={(wh as { id: string }).id}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ delay: i * 0.04 }}
+									className="flex items-center justify-between px-5 py-3 gap-4"
+								>
+									<div className="min-w-0 flex-1">
+										<div className="flex items-center gap-1.5">
+											<span
+												className="text-xs font-mono truncate"
+												style={{ color: "var(--accent-text)" }}
+											>
+												{mask((wh as { url: string }).url)}
 											</span>
+											<button
+												type="button"
+												onClick={() => void open((wh as { url: string }).url)}
+												className="flex-shrink-0"
+												style={{
+													color: "var(--text-4)",
+													background: "none",
+													border: "none",
+													cursor: "pointer",
+													padding: 0,
+												}}
+											>
+												<ExternalLink className="w-3 h-3" strokeWidth={1.5} />
+											</button>
 										</div>
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={() => setDeleteTarget((wh as { id: string }).id)}
-											aria-label="Delete webhook"
-										>
-											<Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
-										</Button>
-									</motion.div>
-								))}
-							</div>
-						)}
-					</motion.div>
-				)}
+										<span className="text-xs font-mono" style={{ color: "var(--text-4)" }}>
+											{mask((wh as { id: string }).id)}
+										</span>
+									</div>
+									<Button
+										variant="ghost"
+										size="icon"
+										onClick={() => setDeleteTarget((wh as { id: string }).id)}
+										aria-label="Delete webhook"
+									>
+										<Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+									</Button>
+								</motion.div>
+							))}
+						</div>
+					)}
+				</motion.div>
 			</div>
 
 			<ConfirmDialog
@@ -214,6 +213,22 @@ export function WebhookManager({ workspaceId }: Props) {
 				onCancel={() => setDeleteTarget(null)}
 				loading={deleteWebhook.isPending}
 			/>
+		</div>
+	);
+}
+
+function WebhookListSkeleton() {
+	return (
+		<div className="divide-y" style={{ borderColor: "var(--border)" }} aria-hidden="true">
+			{Array.from({ length: 4 }).map((_, index) => (
+				<div key={index} className="flex items-center justify-between px-5 py-3 gap-4">
+					<div className="min-w-0 flex-1">
+						<Skeleton accent className="h-3 w-52 rounded" />
+						<Skeleton className="mt-2 h-3 w-32 rounded" />
+					</div>
+					<Skeleton className="h-8 w-8 rounded-lg" />
+				</div>
+			))}
 		</div>
 	);
 }

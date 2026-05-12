@@ -17,7 +17,7 @@ import { useDeleteWorkspace, useQueueStatus, useScheduleDream, useWorkspace } fr
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { JsonViewer } from "@/components/shared/JsonViewer";
-import { PageLoader } from "@/components/shared/LoadingSpinner";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Button } from "@/components/ui/button";
 import { Body, Caption, PageTitle, SectionHeading } from "@/components/ui/typography";
 import { ScheduleDreamModal } from "@/components/workspaces/ScheduleDreamModal";
@@ -107,7 +107,7 @@ export function WorkspaceDetail() {
 
 			<div className="mt-8">
 				<ErrorAlert error={error instanceof Error ? error : null} />
-				{isLoading && <PageLoader />}
+				{isLoading && <WorkspaceDetailSkeleton />}
 
 				{!isLoading && workspace && (
 					<div className="space-y-4">
@@ -339,6 +339,45 @@ export function WorkspaceDetail() {
 				onClose={() => setDreamOpen(false)}
 				mutation={scheduleDream}
 			/>
+		</div>
+	);
+}
+
+function WorkspaceDetailSkeleton() {
+	return (
+		<div className="space-y-4" aria-hidden="true">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+				{Array.from({ length: 4 }).map((_, index) => (
+					<div key={index} className="rounded-xl p-5 theme-card">
+						<Skeleton accent className="h-5 w-5 rounded" />
+						<Skeleton className="mt-4 h-4 w-24 rounded" />
+						<Skeleton className="mt-3 h-3 w-32 rounded" />
+						<Skeleton className="mt-2 h-3 w-24 rounded" />
+					</div>
+				))}
+			</div>
+
+			<div className="rounded-xl p-5 theme-card">
+				<div className="flex items-center justify-between mb-4">
+					<Skeleton className="h-4 w-28 rounded" />
+					<Skeleton className="h-4 w-20 rounded" />
+				</div>
+				<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+					{Array.from({ length: 4 }).map((_, index) => (
+						<div key={index}>
+							<Skeleton accent className="h-8 w-12 rounded" />
+							<Skeleton className="mt-2 h-3 w-16 rounded" />
+						</div>
+					))}
+				</div>
+			</div>
+
+			<div className="rounded-xl p-5 theme-card">
+				<Skeleton className="h-4 w-20 rounded" />
+				<Skeleton className="mt-4 h-3 w-full rounded" />
+				<Skeleton className="mt-2 h-3 w-[92%] rounded" />
+				<Skeleton className="mt-2 h-3 w-[64%] rounded" />
+			</div>
 		</div>
 	);
 }

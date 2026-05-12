@@ -14,8 +14,8 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { FormModal } from "@/components/shared/FormModal";
-import { PageLoader } from "@/components/shared/LoadingSpinner";
 import { Pagination } from "@/components/shared/Pagination";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { SortControl, type SortDir } from "@/components/shared/SortControl";
 import { TimestampChip } from "@/components/shared/TimestampChip";
 import { Button } from "@/components/ui/button";
@@ -193,7 +193,7 @@ export function ConclusionBrowser() {
 			</form>
 
 			<ErrorAlert error={error instanceof Error ? error : null} />
-			{(isLoading || (activeSearch && searchLoading)) && <PageLoader />}
+			{(isLoading || (activeSearch && searchLoading)) && <ConclusionsSkeleton />}
 
 			{!isLoading && !searchLoading && displayedConclusions.length === 0 && (
 				<EmptyState
@@ -311,6 +311,32 @@ export function ConclusionBrowser() {
 				onCancel={() => setDeleteTarget(null)}
 				loading={deleteConclusion.isPending}
 			/>
+		</div>
+	);
+}
+
+function ConclusionsSkeleton() {
+	return (
+		<div className="space-y-3" aria-hidden="true">
+			{Array.from({ length: 4 }).map((_, index) => (
+				<div
+					key={index}
+					className="rounded-xl p-5"
+					style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+				>
+					<Skeleton className="h-3 w-full rounded" />
+					<Skeleton className="mt-2 h-3 w-[94%] rounded" />
+					<Skeleton className="mt-2 h-3 w-[76%] rounded" />
+					<div
+						className="flex items-center gap-3 mt-4 pt-3"
+						style={{ borderTop: "1px solid var(--border)" }}
+					>
+						<Skeleton className="h-3 w-20 rounded" />
+						<Skeleton className="h-3 w-16 rounded" />
+						<Skeleton className="ml-auto h-6 w-28 rounded-full" />
+					</div>
+				</div>
+			))}
 		</div>
 	);
 }
