@@ -1,3 +1,11 @@
+# [0.8.0](https://github.com/offendingcommit/openconcho/compare/v0.7.1...v0.8.0) (2026-05-15)
+
+
+### Features
+
+* add health indicator and localhost auto-detect ([38e76d3](https://github.com/offendingcommit/openconcho/commit/38e76d33dea7fb5b31547ff77f5099600894176e))
+* add Honcho Cloud connection preset ([f071762](https://github.com/offendingcommit/openconcho/commit/f0717624eb129be82a24c686588085b4c2303bc0))
+
 ## [0.7.1](https://github.com/offendingcommit/openconcho/compare/v0.7.0...v0.7.1) (2026-05-12)
 
 
