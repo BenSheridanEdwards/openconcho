@@ -1,5 +1,5 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	Boxes,
 	Check,
@@ -8,9 +8,13 @@ import {
 	Eye,
 	EyeOff,
 	LayoutDashboard,
+	Lightbulb,
+	MessageSquare,
 	Moon,
 	Settings,
 	Sun,
+	Users,
+	Webhook,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { HealthDot } from "@/components/shared/HealthDot";
@@ -20,11 +24,18 @@ import { useInstances } from "@/hooks/useInstances";
 import { useTheme } from "@/hooks/useTheme";
 import { COLOR } from "@/lib/constants";
 
-const navItems = [
+const TOP_NAV = [
 	{ to: "/" as const, label: "Dashboard", icon: LayoutDashboard, exact: true },
 	{ to: "/workspaces" as const, label: "Workspaces", icon: Boxes, exact: false },
 	{ to: "/settings" as const, label: "Settings", icon: Settings, exact: false },
 ];
+
+const WORKSPACE_SECTIONS = [
+	{ label: "Peers", icon: Users, section: "peers" },
+	{ label: "Sessions", icon: MessageSquare, section: "sessions" },
+	{ label: "Conclusions", icon: Lightbulb, section: "conclusions" },
+	{ label: "Webhooks", icon: Webhook, section: "webhooks" },
+] as const;
 
 export function Sidebar() {
 	const matchRoute = useMatchRoute();
@@ -45,6 +56,13 @@ export function Sidebar() {
 		window.addEventListener("mousedown", onClick);
 		return () => window.removeEventListener("mousedown", onClick);
 	}, [switcherOpen]);
+
+	// Detect workspace context — matchRoute returns params or false
+	const wsMatch = matchRoute({
+		to: "/workspaces/$workspaceId" as never,
+		fuzzy: true,
+	}) as { workspaceId: string } | false;
+	const activeWorkspaceId = wsMatch ? wsMatch.workspaceId : null;
 
 	return (
 		<motion.aside
@@ -160,8 +178,8 @@ export function Sidebar() {
 			</div>
 
 			{/* Nav */}
-			<nav className="flex-1 px-2 sm:px-3 py-3 space-y-0.5">
-				{navItems.map((item) => {
+			<nav className="flex-1 px-2 sm:px-3 py-3 space-y-0.5 overflow-y-auto">
+				{TOP_NAV.map((item) => {
 					const Icon = item.icon;
 					const isActive = matchRoute({ to: item.to, fuzzy: !item.exact });
 
@@ -198,6 +216,73 @@ export function Sidebar() {
 						</Link>
 					);
 				})}
+
+				{/* Workspace contextual sub-nav */}
+				<AnimatePresence>
+					{activeWorkspaceId && (
+						<motion.div
+							key="ws-subnav"
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: "auto" }}
+							exit={{ opacity: 0, height: 0 }}
+							transition={{ duration: 0.22, ease: "easeInOut" }}
+							className="overflow-hidden"
+						>
+							{/* Workspace ID label */}
+							<div className="px-3 pt-2 pb-1 hidden sm:block">
+								<p
+									className="text-xs font-mono truncate"
+									style={{ color: "var(--text-4)" }}
+									title={mask(activeWorkspaceId)}
+								>
+									{mask(activeWorkspaceId)}
+								</p>
+							</div>
+
+							{/* Section links — indented */}
+							<div className="pl-2 sm:pl-3 space-y-0.5">
+								{WORKSPACE_SECTIONS.map((s) => {
+									const Icon = s.icon;
+									const isActive = matchRoute({
+										to: `/workspaces/$workspaceId/${s.section}` as never,
+										params: { workspaceId: activeWorkspaceId } as never,
+										fuzzy: true,
+									});
+
+									return (
+										<Link
+											key={s.section}
+											to={`/workspaces/$workspaceId/${s.section}` as never}
+											params={{ workspaceId: activeWorkspaceId } as never}
+											className="relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-all justify-center sm:justify-start"
+											style={{
+												color: isActive ? "var(--accent-text)" : "var(--text-3)",
+											}}
+											title={s.label}
+										>
+											{isActive && (
+												<motion.div
+													layoutId="ws-sub-indicator"
+													className="absolute inset-0 rounded-lg"
+													style={{
+														background: "var(--accent-dim)",
+														border: "1px solid var(--accent-border)",
+													}}
+													transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+												/>
+											)}
+											<Icon
+												className="w-3.5 h-3.5 shrink-0 relative z-10"
+												strokeWidth={isActive ? 2 : 1.5}
+											/>
+											<span className="relative z-10 font-medium hidden sm:block">{s.label}</span>
+										</Link>
+									);
+								})}
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</nav>
 
 			{/* Theme toggle + footer */}
