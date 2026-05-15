@@ -2,6 +2,7 @@ import { Link, useMatchRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
 	Boxes,
+	Braces,
 	Check,
 	ChevronRight,
 	ChevronsUpDown,
@@ -21,6 +22,7 @@ import { HealthDot } from "@/components/shared/HealthDot";
 import { useDemo } from "@/hooks/useDemo";
 import { useHealthStatus } from "@/hooks/useHealthStatus";
 import { useInstances } from "@/hooks/useInstances";
+import { useMetadata } from "@/hooks/useMetadata";
 import { useTheme } from "@/hooks/useTheme";
 import { COLOR } from "@/lib/constants";
 
@@ -42,6 +44,7 @@ export function Sidebar() {
 	const { instances, active, activate } = useInstances();
 	const { theme, toggle } = useTheme();
 	const { demo, toggle: toggleDemo, mask } = useDemo();
+	const { showMetadata, toggle: toggleMeta } = useMetadata();
 	const { data: health } = useHealthStatus();
 	const [switcherOpen, setSwitcherOpen] = useState(false);
 	const switcherRef = useRef<HTMLDivElement | null>(null);
@@ -285,7 +288,7 @@ export function Sidebar() {
 				</AnimatePresence>
 			</nav>
 
-			{/* Theme toggle + footer */}
+			{/* Footer — version, demo, metadata, theme */}
 			<div
 				className="px-3 sm:px-5 py-3 flex items-center justify-between"
 				style={{ borderTop: "1px solid var(--border)" }}
@@ -310,6 +313,19 @@ export function Sidebar() {
 						) : (
 							<Eye className="w-3.5 h-3.5" strokeWidth={1.5} />
 						)}
+					</button>
+					<button
+						type="button"
+						onClick={toggleMeta}
+						className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+						style={{
+							background: showMetadata ? "rgba(245,158,11,0.1)" : "var(--surface)",
+							border: `1px solid ${showMetadata ? "rgba(245,158,11,0.3)" : "var(--border)"}`,
+							color: showMetadata ? COLOR.warning : "var(--text-3)",
+						}}
+						title={showMetadata ? "Hide raw metadata" : "Show raw metadata"}
+					>
+						<Braces className="w-3.5 h-3.5" strokeWidth={1.5} />
 					</button>
 					<button
 						type="button"

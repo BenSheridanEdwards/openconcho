@@ -1,16 +1,6 @@
-import { Link, useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-	ChevronDown,
-	Eye,
-	EyeOff,
-	MessageCircle,
-	Save,
-	Search,
-	User,
-	Users,
-	X,
-} from "lucide-react";
+import { Eye, EyeOff, MessageCircle, Save, Search, User, Users, X } from "lucide-react";
 import { useState } from "react";
 import {
 	usePeer,
@@ -20,6 +10,7 @@ import {
 	useSearchPeer,
 	useSetPeerCard,
 } from "@/api/queries";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { Badge } from "@/components/shared/Badge";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { JsonViewer } from "@/components/shared/JsonViewer";
@@ -38,10 +29,12 @@ import {
 	SectionHeading,
 } from "@/components/ui/typography";
 import { useDemo } from "@/hooks/useDemo";
+import { useMetadata } from "@/hooks/useMetadata";
 import { COLOR } from "@/lib/constants";
 
 export function PeerDetail() {
 	const { mask } = useDemo();
+	const { showMetadata } = useMetadata();
 	const { workspaceId, peerId } = useParams({ strict: false }) as {
 		workspaceId: string;
 		peerId: string;
@@ -65,7 +58,6 @@ export function PeerDetail() {
 
 	const [cardDraft, setCardDraft] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [metaExpanded, setMetaExpanded] = useState(false);
 
 	const observeMe = (peer as { configuration?: { observe_me?: boolean } } | undefined)
 		?.configuration?.observe_me;
@@ -79,27 +71,7 @@ export function PeerDetail() {
 	return (
 		<div className="page-container page-container--xl">
 			<motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
-				<div className="flex items-center gap-2 text-xs mb-4" style={{ color: "var(--text-3)" }}>
-					<Link to="/workspaces" className="hover:underline">
-						Workspaces
-					</Link>
-					<span>/</span>
-					<Link
-						to="/workspaces/$workspaceId"
-						params={{ workspaceId } as never}
-						className="hover:underline font-mono"
-					>
-						{mask(workspaceId)}
-					</Link>
-					<span>/</span>
-					<Link
-						to="/workspaces/$workspaceId/peers"
-						params={{ workspaceId } as never}
-						className="hover:underline"
-					>
-						Peers
-					</Link>
-				</div>
+				<Breadcrumb />
 
 				<div className="flex items-start justify-between gap-4">
 					<div>
@@ -377,47 +349,29 @@ export function PeerDetail() {
 							)}
 						</motion.div>
 
-						{/* Metadata — collapsible */}
-						<motion.div
-							initial={{ opacity: 0, y: 8 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.25 }}
-							className="rounded-xl theme-card overflow-hidden"
-						>
-							<button
-								type="button"
-								onClick={() => setMetaExpanded((v) => !v)}
-								className="w-full flex items-center justify-between px-5 py-4"
-								style={{ color: "var(--text-3)" }}
-							>
-								<SectionHeading className="mb-0">Metadata</SectionHeading>
+						{/* Metadata — global toggle */}
+						<AnimatePresence>
+							{showMetadata && (
 								<motion.div
-									animate={{ rotate: metaExpanded ? 0 : -90 }}
-									transition={{ duration: 0.15 }}
+									initial={{ opacity: 0, height: 0 }}
+									animate={{ opacity: 1, height: "auto" }}
+									exit={{ opacity: 0, height: 0 }}
+									transition={{ duration: 0.2 }}
+									className="overflow-hidden"
 								>
-									<ChevronDown
-										className="w-4 h-4"
-										strokeWidth={2}
-										style={{ color: COLOR.dimText }}
-									/>
-								</motion.div>
-							</button>
-							<AnimatePresence initial={false}>
-								{metaExpanded && (
-									<motion.div
-										initial={{ height: 0, opacity: 0 }}
-										animate={{ height: "auto", opacity: 1 }}
-										exit={{ height: 0, opacity: 0 }}
-										transition={{ duration: 0.2 }}
-										className="overflow-hidden"
+									<div
+										className="rounded-xl p-5"
+										style={{
+											background: "rgba(245,158,11,0.04)",
+											border: "1px solid rgba(245,158,11,0.2)",
+										}}
 									>
-										<div className="px-5 pb-5">
-											<JsonViewer data={peer.metadata} maxHeight="300px" />
-										</div>
-									</motion.div>
-								)}
-							</AnimatePresence>
-						</motion.div>
+										<SectionHeading style={{ color: COLOR.warning }}>Metadata</SectionHeading>
+										<JsonViewer data={peer.metadata} maxHeight="300px" />
+									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
 					</>
 				)}
 			</div>

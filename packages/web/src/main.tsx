@@ -3,6 +3,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { DemoProvider } from "./context/DemoContext";
+import { MetadataProvider } from "./context/MetadataContext";
 import { initDeepLinks } from "./lib/deep-link";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
@@ -37,7 +38,9 @@ createRoot(root).render(
 	<StrictMode>
 		<QueryClientProvider client={queryClient}>
 			<DemoProvider>
-				<RouterProvider router={router} />
+				<MetadataProvider>
+					<RouterProvider router={router} />
+				</MetadataProvider>
 			</DemoProvider>
 		</QueryClientProvider>
 	</StrictMode>,

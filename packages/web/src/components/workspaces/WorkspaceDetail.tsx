@@ -1,7 +1,6 @@
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-	ArrowLeft,
 	Boxes,
 	ChevronDown,
 	CircleDot,
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useDeleteWorkspace, useQueueStatus, useScheduleDream, useWorkspace } from "@/api/queries";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { JsonViewer } from "@/components/shared/JsonViewer";
@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Body, Caption, PageTitle, SectionHeading } from "@/components/ui/typography";
 import { ScheduleDreamModal } from "@/components/workspaces/ScheduleDreamModal";
 import { useDemo } from "@/hooks/useDemo";
+import { useMetadata } from "@/hooks/useMetadata";
 import { COLOR } from "@/lib/constants";
 
 const NAV_SECTIONS = [
@@ -53,6 +54,7 @@ const NAV_SECTIONS = [
 
 export function WorkspaceDetail() {
 	const { mask } = useDemo();
+	const { showMetadata } = useMetadata();
 	const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
 	const navigate = useNavigate();
 
@@ -74,14 +76,7 @@ export function WorkspaceDetail() {
 	return (
 		<div className="page-container page-container--wide">
 			<motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
-				<Link
-					to="/workspaces"
-					className="inline-flex items-center gap-1.5 text-xs mb-4 transition-colors"
-					style={{ color: "var(--text-3)" }}
-				>
-					<ArrowLeft className="w-3 h-3" strokeWidth={1.5} />
-					Workspaces
-				</Link>
+				<Breadcrumb />
 				<div className="flex items-start justify-between gap-4 mb-1">
 					<div className="flex items-center gap-2 min-w-0">
 						<Boxes
@@ -125,7 +120,7 @@ export function WorkspaceDetail() {
 										<Link
 											to={`/workspaces/$workspaceId/${s.to}` as never}
 											params={{ workspaceId } as never}
-											className="block rounded-xl p-5 group transition-all theme-card"
+											className="block h-full rounded-xl p-5 group transition-all theme-card"
 										>
 											<Icon
 												className="w-5 h-5 mb-3"
@@ -309,16 +304,29 @@ export function WorkspaceDetail() {
 							</motion.div>
 						)}
 
-						{/* Metadata */}
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ delay: 0.38 }}
-							className="rounded-xl p-5 theme-card"
-						>
-							<SectionHeading>Metadata</SectionHeading>
-							<JsonViewer data={workspace.metadata} />
-						</motion.div>
+						{/* Metadata — global toggle */}
+						<AnimatePresence>
+							{showMetadata && (
+								<motion.div
+									initial={{ opacity: 0, height: 0 }}
+									animate={{ opacity: 1, height: "auto" }}
+									exit={{ opacity: 0, height: 0 }}
+									transition={{ duration: 0.2 }}
+									className="overflow-hidden"
+								>
+									<div
+										className="rounded-xl p-5"
+										style={{
+											background: "rgba(245,158,11,0.04)",
+											border: "1px solid rgba(245,158,11,0.2)",
+										}}
+									>
+										<SectionHeading style={{ color: COLOR.warning }}>Metadata</SectionHeading>
+										<JsonViewer data={workspace.metadata} />
+									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
 					</div>
 				)}
 			</div>
