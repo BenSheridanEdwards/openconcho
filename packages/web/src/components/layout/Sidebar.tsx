@@ -6,6 +6,7 @@ import {
 	Check,
 	ChevronRight,
 	ChevronsUpDown,
+	Columns2,
 	Eye,
 	EyeOff,
 	LayoutDashboard,
@@ -29,6 +30,7 @@ import { COLOR } from "@/lib/constants";
 const TOP_NAV = [
 	{ to: "/" as const, label: "Dashboard", icon: LayoutDashboard, exact: true },
 	{ to: "/workspaces" as const, label: "Workspaces", icon: Boxes, exact: false },
+	{ to: "/compare" as const, label: "Compare", icon: Columns2, exact: false },
 	{ to: "/settings" as const, label: "Settings", icon: Settings, exact: false },
 ];
 
