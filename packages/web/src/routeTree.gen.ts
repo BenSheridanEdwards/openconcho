@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SeedKitsRouteImport } from './routes/seed-kits'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces_.$workspaceId'
 import { Route as WorkspacesWorkspaceIdWebhooksRouteImport } from './routes/workspaces_.$workspaceId_.webhooks'
@@ -49,6 +50,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -118,6 +124,7 @@ const WorkspacesWorkspaceIdPeersPeerIdChatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/seed-kits': typeof SeedKitsRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/seed-kits': typeof SeedKitsRoute
@@ -155,6 +163,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/seed-kits': typeof SeedKitsRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/audit'
     | '/compare'
     | '/explore'
     | '/seed-kits'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/audit'
     | '/compare'
     | '/explore'
     | '/seed-kits'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/audit'
     | '/compare'
     | '/explore'
     | '/seed-kits'
@@ -230,6 +242,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuditRoute: typeof AuditRoute
   CompareRoute: typeof CompareRoute
   ExploreRoute: typeof ExploreRoute
   SeedKitsRoute: typeof SeedKitsRoute
@@ -282,6 +295,13 @@ declare module '@tanstack/react-router' {
       path: '/compare'
       fullPath: '/compare'
       preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -366,6 +386,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuditRoute: AuditRoute,
   CompareRoute: CompareRoute,
   ExploreRoute: ExploreRoute,
   SeedKitsRoute: SeedKitsRoute,

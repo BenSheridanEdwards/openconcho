@@ -16,6 +16,7 @@ import {
 	Moon,
 	MoonStar,
 	Settings,
+	ShieldCheck,
 	Sun,
 	Users,
 	Webhook,
@@ -34,6 +35,7 @@ const TOP_NAV = [
 	{ to: "/workspaces" as const, label: "Workspaces", icon: Boxes, exact: false },
 	{ to: "/compare" as const, label: "Compare", icon: Columns2, exact: false },
 	{ to: "/seed-kits" as const, label: "Seed Kits", icon: Layers, exact: false },
+	{ to: "/audit" as const, label: "Audit", icon: ShieldCheck, exact: false },
 	{ to: "/settings" as const, label: "Settings", icon: Settings, exact: false },
 ];
 
