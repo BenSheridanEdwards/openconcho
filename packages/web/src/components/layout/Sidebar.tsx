@@ -9,6 +9,7 @@ import {
 	Columns2,
 	Eye,
 	EyeOff,
+	Layers,
 	LayoutDashboard,
 	Lightbulb,
 	MessageSquare,
@@ -31,6 +32,7 @@ const TOP_NAV = [
 	{ to: "/" as const, label: "Dashboard", icon: LayoutDashboard, exact: true },
 	{ to: "/workspaces" as const, label: "Workspaces", icon: Boxes, exact: false },
 	{ to: "/compare" as const, label: "Compare", icon: Columns2, exact: false },
+	{ to: "/seed-kits" as const, label: "Seed Kits", icon: Layers, exact: false },
 	{ to: "/settings" as const, label: "Settings", icon: Settings, exact: false },
 ];
 
