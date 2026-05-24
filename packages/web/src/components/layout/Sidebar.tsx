@@ -13,6 +13,7 @@ import {
 	Lightbulb,
 	MessageSquare,
 	Moon,
+	MoonStar,
 	Settings,
 	Sun,
 	Users,
@@ -38,6 +39,7 @@ const WORKSPACE_SECTIONS = [
 	{ label: "Peers", icon: Users, section: "peers" },
 	{ label: "Sessions", icon: MessageSquare, section: "sessions" },
 	{ label: "Conclusions", icon: Lightbulb, section: "conclusions" },
+	{ label: "Dreams", icon: MoonStar, section: "dreams" },
 	{ label: "Webhooks", icon: Webhook, section: "webhooks" },
 ] as const;
 
