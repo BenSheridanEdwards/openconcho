@@ -237,67 +237,99 @@ export function ConclusionDiffView() {
 				transition={{ delay: 0.05 }}
 				className="rounded-xl p-4 mb-6 theme-card"
 			>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-					<div>
-						<Label htmlFor="observed-id" className="mb-1.5">
-							Observed peer (optional)
-						</Label>
-						<Input
-							id="observed-id"
-							value={observedId}
-							onChange={(e) => setObservedId(e.target.value)}
-							placeholder="peer id"
-							className="font-mono"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="observer-id" className="mb-1.5">
-							Observer peer (optional)
-						</Label>
-						<Input
-							id="observer-id"
-							value={observerId}
-							onChange={(e) => setObserverId(e.target.value)}
-							placeholder="peer id"
-							className="font-mono"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="before-ts" className="mb-1.5">
-							Before
-						</Label>
-						<Input
-							id="before-ts"
-							type="datetime-local"
-							value={beforeInput}
-							onChange={(e) => setBeforeInput(e.target.value)}
-							className="font-mono [&::-webkit-datetime-edit]:flex-1 [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="after-ts" className="mb-1.5">
-							After
-						</Label>
-						<Input
-							id="after-ts"
-							type="datetime-local"
-							value={afterInput}
-							onChange={(e) => setAfterInput(e.target.value)}
-							className="font-mono [&::-webkit-datetime-edit]:flex-1 [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-						/>
-					</div>
-				</div>
-				<div className="flex flex-wrap items-center gap-2">
-					<Caption style={{ color: "var(--text-4)" }}>Presets:</Caption>
-					<Button variant="surface" size="sm" onClick={() => applyPreset("last-hour")}>
-						Last hour
-					</Button>
-					<Button variant="surface" size="sm" onClick={() => applyPreset("last-24h")}>
-						Last 24h
-					</Button>
-					<Button variant="surface" size="sm" onClick={() => applyPreset("last-week")}>
-						Last week
-					</Button>
+				<div className="flex flex-col lg:flex-row gap-4 lg:gap-6 mb-3">
+					{/* Filter conclusions: narrow what goes into the snapshots */}
+					<fieldset className="flex-1 min-w-0">
+						<Caption
+							as="legend"
+							className="uppercase tracking-wider mb-2"
+							style={{ color: "var(--text-4)" }}
+						>
+							Filter conclusions
+						</Caption>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+							<div>
+								<Label htmlFor="observed-id" className="mb-1.5">
+									Filter by observed peer (optional)
+								</Label>
+								<Input
+									id="observed-id"
+									value={observedId}
+									onChange={(e) => setObservedId(e.target.value)}
+									placeholder="peer id"
+									className="font-mono"
+								/>
+							</div>
+							<div>
+								<Label htmlFor="observer-id" className="mb-1.5">
+									Filter by observer peer (optional)
+								</Label>
+								<Input
+									id="observer-id"
+									value={observerId}
+									onChange={(e) => setObserverId(e.target.value)}
+									placeholder="peer id"
+									className="font-mono"
+								/>
+							</div>
+						</div>
+					</fieldset>
+
+					{/* Vertical divider between the two groups (desktop only) */}
+					<div
+						aria-hidden
+						className="hidden lg:block w-px self-stretch"
+						style={{ background: "var(--border)" }}
+					/>
+
+					{/* Comparison window: the two timestamps being diffed */}
+					<fieldset className="flex-1 min-w-0">
+						<Caption
+							as="legend"
+							className="uppercase tracking-wider mb-2"
+							style={{ color: "var(--text-4)" }}
+						>
+							Comparison window
+						</Caption>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+							<div>
+								<Label htmlFor="before-ts" className="mb-1.5">
+									Before
+								</Label>
+								<Input
+									id="before-ts"
+									type="datetime-local"
+									value={beforeInput}
+									onChange={(e) => setBeforeInput(e.target.value)}
+									className="font-mono [&::-webkit-datetime-edit]:flex-1 [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+								/>
+							</div>
+							<div>
+								<Label htmlFor="after-ts" className="mb-1.5">
+									After
+								</Label>
+								<Input
+									id="after-ts"
+									type="datetime-local"
+									value={afterInput}
+									onChange={(e) => setAfterInput(e.target.value)}
+									className="font-mono [&::-webkit-datetime-edit]:flex-1 [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+								/>
+							</div>
+						</div>
+						<div className="flex flex-wrap items-center gap-2 mt-3">
+							<Caption style={{ color: "var(--text-4)" }}>Presets:</Caption>
+							<Button variant="surface" size="sm" onClick={() => applyPreset("last-hour")}>
+								Last hour
+							</Button>
+							<Button variant="surface" size="sm" onClick={() => applyPreset("last-24h")}>
+								Last 24h
+							</Button>
+							<Button variant="surface" size="sm" onClick={() => applyPreset("last-week")}>
+								Last week
+							</Button>
+						</div>
+					</fieldset>
 				</div>
 				{showInvalid && (
 					<div
