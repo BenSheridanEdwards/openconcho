@@ -23,6 +23,7 @@ import { Route as WorkspacesWorkspaceIdDreamsRouteImport } from './routes/worksp
 import { Route as WorkspacesWorkspaceIdConclusionsRouteImport } from './routes/workspaces_.$workspaceId_.conclusions'
 import { Route as WorkspacesWorkspaceIdSessionsSessionIdRouteImport } from './routes/workspaces_.$workspaceId_.sessions_.$sessionId'
 import { Route as WorkspacesWorkspaceIdPeersPeerIdRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId'
+import { Route as WorkspacesWorkspaceIdPeersPeerIdPlaygroundRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId_.playground'
 import { Route as WorkspacesWorkspaceIdPeersPeerIdChatRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId_.chat'
 
 const WorkspacesRoute = WorkspacesRouteImport.update({
@@ -102,6 +103,12 @@ const WorkspacesWorkspaceIdPeersPeerIdRoute =
     path: '/workspaces/$workspaceId/peers/$peerId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute =
+  WorkspacesWorkspaceIdPeersPeerIdPlaygroundRouteImport.update({
+    id: '/workspaces_/$workspaceId_/peers_/$peerId_/playground',
+    path: '/workspaces/$workspaceId/peers/$peerId/playground',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WorkspacesWorkspaceIdPeersPeerIdChatRoute =
   WorkspacesWorkspaceIdPeersPeerIdChatRouteImport.update({
     id: '/workspaces_/$workspaceId_/peers_/$peerId_/chat',
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceId/peers/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   '/workspaces/$workspaceId/sessions/$sessionId': typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   '/workspaces/$workspaceId/peers/$peerId/chat': typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  '/workspaces/$workspaceId/peers/$peerId/playground': typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -142,6 +150,7 @@ export interface FileRoutesByTo {
   '/workspaces/$workspaceId/peers/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   '/workspaces/$workspaceId/sessions/$sessionId': typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   '/workspaces/$workspaceId/peers/$peerId/chat': typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  '/workspaces/$workspaceId/peers/$peerId/playground': typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -160,6 +169,7 @@ export interface FileRoutesById {
   '/workspaces_/$workspaceId_/peers_/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   '/workspaces_/$workspaceId_/sessions_/$sessionId': typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   '/workspaces_/$workspaceId_/peers_/$peerId_/chat': typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  '/workspaces_/$workspaceId_/peers_/$peerId_/playground': typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceId/peers/$peerId'
     | '/workspaces/$workspaceId/sessions/$sessionId'
     | '/workspaces/$workspaceId/peers/$peerId/chat'
+    | '/workspaces/$workspaceId/peers/$peerId/playground'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceId/peers/$peerId'
     | '/workspaces/$workspaceId/sessions/$sessionId'
     | '/workspaces/$workspaceId/peers/$peerId/chat'
+    | '/workspaces/$workspaceId/peers/$peerId/playground'
   id:
     | '__root__'
     | '/'
@@ -213,6 +225,7 @@ export interface FileRouteTypes {
     | '/workspaces_/$workspaceId_/peers_/$peerId'
     | '/workspaces_/$workspaceId_/sessions_/$sessionId'
     | '/workspaces_/$workspaceId_/peers_/$peerId_/chat'
+    | '/workspaces_/$workspaceId_/peers_/$peerId_/playground'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -231,6 +244,7 @@ export interface RootRouteChildren {
   WorkspacesWorkspaceIdPeersPeerIdRoute: typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   WorkspacesWorkspaceIdSessionsSessionIdRoute: typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   WorkspacesWorkspaceIdPeersPeerIdChatRoute: typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute: typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -333,6 +347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspacesWorkspaceIdPeersPeerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workspaces_/$workspaceId_/peers_/$peerId_/playground': {
+      id: '/workspaces_/$workspaceId_/peers_/$peerId_/playground'
+      path: '/workspaces/$workspaceId/peers/$peerId/playground'
+      fullPath: '/workspaces/$workspaceId/peers/$peerId/playground'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspaces_/$workspaceId_/peers_/$peerId_/chat': {
       id: '/workspaces_/$workspaceId_/peers_/$peerId_/chat'
       path: '/workspaces/$workspaceId/peers/$peerId/chat'
@@ -361,6 +382,8 @@ const rootRouteChildren: RootRouteChildren = {
     WorkspacesWorkspaceIdSessionsSessionIdRoute,
   WorkspacesWorkspaceIdPeersPeerIdChatRoute:
     WorkspacesWorkspaceIdPeersPeerIdChatRoute,
+  WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute:
+    WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
