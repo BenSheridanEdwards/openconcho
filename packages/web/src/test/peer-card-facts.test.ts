@@ -38,6 +38,27 @@ describe("extractFacts", () => {
 		const facts = extractFacts(["Name: Ada", "Name: Other"]);
 		expect(facts.get("name")).toBe("Ada");
 	});
+
+	it("unwraps an ALL_CAPS group prefix to find the inner fact", () => {
+		// Honcho's PeerCardViewer renders ALL_CAPS prefixes as collapsible
+		// section labels; cards in the wild use shapes like:
+		//   IDENTITY: Name: Ben Sheridan-Edwards
+		//   ATTRIBUTE: Role: Fractional CTO
+		const facts = extractFacts([
+			"IDENTITY: Name: Ben Sheridan-Edwards",
+			"IDENTITY: Email: ben@codewalnut.com",
+			"ATTRIBUTE: Role: Fractional CTO",
+		]);
+		expect(facts.get("name")).toBe("Ben Sheridan-Edwards");
+		expect(facts.get("email")).toBe("ben@codewalnut.com");
+		expect(facts.get("role")).toBe("Fractional CTO");
+	});
+
+	it("falls back to the ALL_CAPS prefix as the key when nothing is nested", () => {
+		// "EMAIL: x@y.z" has no inner colon — treat EMAIL itself as the key.
+		const facts = extractFacts(["EMAIL: ben@codewalnut.com"]);
+		expect(facts.get("email")).toBe("ben@codewalnut.com");
+	});
 });
 
 describe("auditFacts", () => {
