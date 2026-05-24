@@ -22,5 +22,26 @@ export default defineConfig({
 		css: false,
 		include: ["src/**/*.{test,spec}.{ts,tsx}"],
 		exclude: ["node_modules", "dist", "e2e"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "html", "json-summary", "lcov"],
+			include: ["src/**/*.{ts,tsx}"],
+			exclude: [
+				"src/**/*.{test,spec}.{ts,tsx}",
+				"src/test/**",
+				"src/routeTree.gen.ts",
+				"src/api/schema.d.ts",
+				"src/main.tsx",
+				"src/vite-env.d.ts",
+			],
+			// Conservative starting floor — ratchet up as coverage grows.
+			// Drop below these and CI fails.
+			thresholds: {
+				lines: 25,
+				functions: 25,
+				branches: 50,
+				statements: 25,
+			},
+		},
 	},
 });
