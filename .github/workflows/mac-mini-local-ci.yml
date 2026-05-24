@@ -1,0 +1,175 @@
+name: Mac mini local CI
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mac-mini-local-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-playwright-gate:
+    name: Web Playwright gate (Mac mini)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
+    timeout-minutes: 15
+    env:
+      CI: true
+      TMPDIR: ${{ runner.temp }}
+      TMP: ${{ runner.temp }}
+      TEMP: ${{ runner.temp }}
+      PLAYWRIGHT_HTML_OPEN: never
+      LOCAL_CI_SCANNER: /Users/agents/Agents/Shared/skills/local-ci-cd/scripts/scan-local-ci-processes.py
+      OPENCONCHO_PROCESS_PATTERN: node|pnpm|vite|playwright|vitest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm and Node.js
+        uses: ./.github/actions/setup
+
+      - name: Runner resource snapshot before
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## Runner resource snapshot before"
+          vm_stat || true
+          df -h . || true
+          BEFORE_PIDS="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-preexisting-pids.txt"
+          pgrep -f "actions-runners/openconcho.*_work/openconcho/openconcho.*(${OPENCONCHO_PROCESS_PATTERN})" | sort > "${BEFORE_PIDS}" || true
+          echo "Existing OpenConcho runner-owned Node/Playwright/Vite processes:"
+          if [ -s "${BEFORE_PIDS}" ]; then
+            pgrep -fl "actions-runners/openconcho.*_work/openconcho/openconcho.*(${OPENCONCHO_PROCESS_PATTERN})" || true
+          else
+            echo "No pre-existing OpenConcho runner-owned preview/test processes found."
+          fi
+          if [ -x "${LOCAL_CI_SCANNER}" ]; then
+            "${LOCAL_CI_SCANNER}" || true
+          fi
+
+      - name: Install Playwright browser
+        shell: bash
+        run: pnpm --filter @openconcho/web exec playwright install webkit
+
+      - name: Web lint, typecheck, test and build
+        shell: bash
+        run: make ci-web
+
+      - name: Playwright e2e tests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PORT=$((21000 + (GITHUB_RUN_ID % 20000)))
+          export PLAYWRIGHT_EXTERNAL_SERVER=1
+          export PLAYWRIGHT_PREVIEW_PORT="${PORT}"
+
+          VITE_PID_FILE="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-vite.pid"
+          VITE_PORT_FILE="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-vite.port"
+          VITE_LOG="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-vite.log"
+
+          cleanup() {
+            kill_pid_list() {
+              while read -r pid; do
+                if [ -n "${pid}" ]; then
+                  kill "$@" "${pid}" 2>/dev/null || true
+                fi
+              done
+            }
+
+            port_pids=$(pgrep -f "(pnpm|vite).*--port ${PORT}" || true)
+            if [ -f "${VITE_PID_FILE}" ]; then
+              VITE_PID="$(cat "${VITE_PID_FILE}")"
+              if [ -n "${VITE_PID}" ]; then
+                kill "${VITE_PID}" 2>/dev/null || true
+              fi
+            fi
+            if [ -n "${port_pids}" ]; then
+              printf '%s\n' "${port_pids}" | kill_pid_list
+            fi
+            sleep 2
+            if [ -f "${VITE_PID_FILE}" ]; then
+              VITE_PID="$(cat "${VITE_PID_FILE}")"
+              if [ -n "${VITE_PID}" ]; then
+                kill -9 "${VITE_PID}" 2>/dev/null || true
+              fi
+            fi
+            port_pids=$(pgrep -f "(pnpm|vite).*--port ${PORT}" || true)
+            if [ -n "${port_pids}" ]; then
+              printf '%s\n' "${port_pids}" | kill_pid_list -9
+            fi
+          }
+          trap cleanup EXIT
+
+          echo "Starting OpenConcho Vite on 127.0.0.1:${PORT}"
+          (cd packages/web && pnpm exec vite --host 127.0.0.1 --port "${PORT}" --strictPort > "${VITE_LOG}" 2>&1) &
+          VITE_PID=$!
+          echo "${VITE_PID}" > "${VITE_PID_FILE}"
+          echo "${PORT}" > "${VITE_PORT_FILE}"
+
+          for _ in $(seq 1 60); do
+            if curl -fsS "http://127.0.0.1:${PORT}/" >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl -fsS "http://127.0.0.1:${PORT}/" >/dev/null
+          pnpm --filter @openconcho/web exec playwright test --project=webkit --reporter=line --workers=1
+
+      - name: Runner resource snapshot after
+        shell: bash
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Runner resource snapshot after"
+          vm_stat || true
+          df -h . || true
+          echo "OpenConcho runner-owned Node/Playwright/Vite processes after job:"
+          BEFORE_PIDS="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-preexisting-pids.txt"
+          AFTER_PIDS="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-after-pids.txt"
+          VITE_PID_FILE="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-vite.pid"
+          VITE_PORT_FILE="${RUNNER_TEMP:-${GITHUB_WORKSPACE}}/openconcho-ci-vite.port"
+          touch "${BEFORE_PIDS}"
+          pgrep -f "actions-runners/openconcho.*_work/openconcho/openconcho.*(${OPENCONCHO_PROCESS_PATTERN})" | sort > "${AFTER_PIDS}" || true
+          if [ -s "${AFTER_PIDS}" ]; then
+            pgrep -fl "actions-runners/openconcho.*_work/openconcho/openconcho.*(${OPENCONCHO_PROCESS_PATTERN})" || true
+          fi
+          current_run_leftovers=""
+          if [ -f "${VITE_PID_FILE}" ]; then
+            VITE_PID="$(cat "${VITE_PID_FILE}")"
+            if [ -n "${VITE_PID}" ] && kill -0 "${VITE_PID}" 2>/dev/null; then
+              current_run_leftovers="${current_run_leftovers} ${VITE_PID}"
+            fi
+          fi
+          if [ -f "${VITE_PORT_FILE}" ]; then
+            VITE_PORT="$(cat "${VITE_PORT_FILE}")"
+            port_leftovers=$(pgrep -f "(pnpm|vite).*--port ${VITE_PORT}" || true)
+            if [ -n "${port_leftovers}" ]; then
+              current_run_leftovers="${current_run_leftovers} ${port_leftovers}"
+            fi
+          fi
+          if [ -x "${LOCAL_CI_SCANNER}" ]; then
+            "${LOCAL_CI_SCANNER}" || true
+          fi
+          if [ -n "${current_run_leftovers}" ]; then
+            echo "Current Playwright/Vite run left process(es) behind:${current_run_leftovers}"
+            exit 1
+          fi
+          new_pids=$(comm -13 "${BEFORE_PIDS}" "${AFTER_PIDS}" || true)
+          if [ -n "${new_pids}" ]; then
+            echo "New leftover processes detected from this run:"
+            echo "${new_pids}"
+            exit 1
+          fi
+          if [ -s "${AFTER_PIDS}" ]; then
+            echo "Only pre-existing runner residue remains; this run did not add new preview/test processes."
+          else
+            echo "No OpenConcho runner-owned preview/test processes left behind."
+          fi
