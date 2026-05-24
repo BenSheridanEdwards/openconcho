@@ -13,7 +13,8 @@ name: AI PR Review
 # engineering risk in the architect's voice. The human still owns merge.
 #
 # Requires: ANTHROPIC_API_KEY repo secret (Settings → Secrets and variables
-# → Actions → New repository secret).
+# → Actions → New repository secret). If the secret is absent, the workflow
+# exits successfully with a notice rather than failing every PR.
 
 on:
   pull_request:
@@ -28,7 +29,6 @@ concurrency:
 permissions:
   contents: read
   pull-requests: write
-  id-token: write
 
 jobs:
   review:
@@ -44,8 +44,22 @@ jobs:
         with:
           fetch-depth: 0  # full history so reviewer can diff against base
 
+      - name: Check Claude credentials
+        id: claude-credentials
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "${ANTHROPIC_API_KEY}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping Claude PR review because ANTHROPIC_API_KEY is not configured for this repository."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: anthropics/claude-code-action@v1
+        if: steps.claude-credentials.outputs.configured == 'true'
         with:
+          github_token: ${{ github.token }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
             You are reviewing a pull request against the openconcho repo.
