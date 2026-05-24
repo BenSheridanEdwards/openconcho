@@ -1,0 +1,164 @@
+name: AI PR Review
+
+# Architect-Playbook-style PR review via Claude.
+#
+# Produces a single structured comment per PR with:
+#   - Intent: what the PR is trying to do
+#   - Risk: blast radius, integration risk, security/data risk
+#   - Standards: violations of AGENTS.md / .claude/rules/coding-standards.md
+#   - Test evidence: which tests cover the change, gaps
+#   - Decision memo: Ready / Conditional / Blocked + reasons + architect focus
+#
+# This is an *evidence layer* — it compresses the diff into reviewable
+# engineering risk in the architect's voice. The human still owns merge.
+#
+# Requires: ANTHROPIC_API_KEY repo secret (Settings → Secrets and variables
+# → Actions → New repository secret).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Avoid running on stale commits — cancel an earlier review run if a new
+# commit lands while it's mid-flight.
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  review:
+    name: Claude review
+    runs-on: ubuntu-latest
+    # Skip on draft PRs and on Dependabot PRs (those have their own review
+    # path and waste tokens).
+    if: |
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so reviewer can diff against base
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are reviewing a pull request against the openconcho repo.
+
+            REPO:      ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            PR TITLE:  ${{ github.event.pull_request.title }}
+            BRANCH:    ${{ github.event.pull_request.head.ref }}
+
+            The PR branch is checked out in the current working directory.
+
+            ## Your job
+
+            Produce ONE top-level PR comment in the architect-playbook format.
+            You are not approving or blocking — the human reviewer owns merge.
+            You are compressing the diff into reviewable engineering risk so
+            the architect spends judgement only where it matters.
+
+            ## Required pre-reads
+
+            Read these files first so the review uses the repo's own
+            standards, not generic best-practice noise:
+
+            - `AGENTS.md` (Definition of Done, Worktree workflow, PR evidence)
+            - `CLAUDE.md` (same content, agent-facing surface)
+            - `.claude/rules/coding-standards.md` (DO / NEVER lists, test
+              standards, API query patterns)
+            - `.claude/rules/workflows.md` (Open a PR — screenshot policy,
+              required PR body sections, conventional commits)
+            - `docs/architecture.md` (component map, data flow, design
+              decisions log)
+
+            Read the PR body and the diff:
+            - `gh pr view ${{ github.event.pull_request.number }} --json title,body,files`
+            - `gh pr diff ${{ github.event.pull_request.number }}`
+
+            ## Output shape
+
+            Post EXACTLY ONE comment via `gh pr comment` with this exact
+            structure (markdown):
+
+            ```
+            ## Claude review
+
+            **Decision memo:** Ready | Conditional | Blocked
+            <one-sentence reason>
+
+            ### Intent
+
+            <2-4 sentence summary of what this PR is trying to do, in the
+            PR author's voice — not "this PR changes X" but "X is changing
+            because Y".>
+
+            ### Risk
+
+            <bullet list. Blast radius (which files/contracts/user journeys),
+            integration risk (does it touch the openapi schema, client
+            cache keys, deep links, Tauri IPC?), security/data risk (any
+            new auth surface, secret handling, cross-instance fan-out?).
+            Be specific — cite files. If risk is low, say so plainly.>
+
+            ### Standards check
+
+            <bullet list. Score against AGENTS.md "Key Constraints" and
+            `.claude/rules/coding-standards.md`. Examples:
+            - "✓ No `any` introduced"
+            - "✓ CSS variables used for theme colors"
+            - "✗ Hardcoded URL at packages/web/src/foo.ts:42 — should read
+              from loadConfig()"
+            - "⚠ TanStack Router params not cast `as never` at line X — fine
+              for fresh-route TSX but check Sidebar.tsx usage"
+            Cite file:line. Skip anything that's fine — only call out
+            deltas from standard.>
+
+            ### Test evidence
+
+            <bullet list. New tests? Regression test for bug fixes?
+            Coverage for the new behaviour? If a UI surface changed and
+            no screenshots are in the PR body, flag it. If a test was
+            modified but assertions weakened, flag it. One-assertion-per-
+            test is the rule.>
+
+            ### Architect focus
+
+            <bullet list of 1-4 items. What should the senior reviewer
+            actually inspect manually? Be ruthless about brevity here —
+            this is where you save the human's time. Examples:
+            - "Confirm the auto-name heuristic produces "DiVinci" not
+              "Divinci" for the workspace `divinci-personal` — currently
+              the test asserts the lowercase-first behaviour."
+            - "Eyeball the screenshot in Section 3 — the dropdown looks
+              cut off at the top right."
+            If you don't have a specific ask, write "Nothing requiring
+            manual judgement — gates pass, evidence is in the PR body.">
+            ```
+
+            ## Rules
+
+            - Post EXACTLY ONE top-level comment via `gh pr comment`. No
+              inline comments unless a finding is genuinely line-specific
+              and would be lost in a top-level summary.
+            - Cite file paths and line numbers when you flag something.
+            - Don't restate the PR body. The reviewer can read that. Add
+              signal, not noise.
+            - The Decision memo is a decision aid, NOT an approval. Even
+              "Ready" still requires the human to merge.
+            - If a finding is uncertain (low confidence), label it with
+              "(likely)" or "(worth confirming)" so the reviewer can
+              triage.
+            - If you find nothing of substance, say so plainly in the
+              Decision memo: "Ready — small change, well-tested, no
+              standards drift. Nothing requiring manual judgement."
+
+          claude_args: |
+            --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr files:*),Bash(git diff:*),Bash(git log:*),Bash(rg:*),Bash(ls:*),Bash(cat:*),mcp__github_inline_comment__create_inline_comment"
+            --model claude-opus-4-7
