@@ -7,7 +7,7 @@
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { test } from "@playwright/test";
+import { type Page, test } from "@playwright/test";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -68,14 +68,13 @@ test.use({
 	...(BASE_URL ? { baseURL: BASE_URL } : {}),
 });
 
-test("playground screenshots", async ({ page }) => {
-	mkdirSync(OUT_DIR, { recursive: true });
-
+async function captureSuite(page: Page, theme: "light" | "dark"): Promise<void> {
 	await page.addInitScript(
-		([key, value]) => {
-			window.localStorage.setItem(key, value);
+		([storeKey, storeValue, themeKey, themeValue]) => {
+			window.localStorage.setItem(storeKey, storeValue);
+			window.localStorage.setItem(themeKey, themeValue);
 		},
-		[STORE_KEY, STORE_VALUE],
+		[STORE_KEY, STORE_VALUE, "openconcho:theme", theme],
 	);
 
 	// Mock the Honcho health probe so the SPA doesn't show a disconnected banner.
@@ -102,11 +101,13 @@ test("playground screenshots", async ({ page }) => {
 		});
 	});
 
+	const suffix = theme === "dark" ? "-dark" : "";
+
 	// 1. Idle: empty playground.
 	await page.goto(`/workspaces/${WORKSPACE}/peers/${encodeURIComponent(PEER)}/playground`);
 	await page.waitForSelector('[data-testid="column-minimal"]');
 	await page.screenshot({
-		path: `${OUT_DIR}/playground-idle.png`,
+		path: `${OUT_DIR}/playground-idle${suffix}.png`,
 		fullPage: false,
 	});
 
@@ -116,7 +117,7 @@ test("playground screenshots", async ({ page }) => {
 	await page.waitForSelector('[data-testid="column-minimal"][data-status="success"]');
 	// minimal returns at ~140ms; capture now so medium/high/max are still pending.
 	await page.screenshot({
-		path: `${OUT_DIR}/playground-running.png`,
+		path: `${OUT_DIR}/playground-running${suffix}.png`,
 		fullPage: false,
 	});
 
@@ -125,7 +126,17 @@ test("playground screenshots", async ({ page }) => {
 		timeout: 10_000,
 	});
 	await page.screenshot({
-		path: `${OUT_DIR}/playground-results.png`,
+		path: `${OUT_DIR}/playground-results${suffix}.png`,
 		fullPage: false,
 	});
+}
+
+test("playground screenshots — light", async ({ page }) => {
+	mkdirSync(OUT_DIR, { recursive: true });
+	await captureSuite(page, "light");
+});
+
+test("playground screenshots — dark", async ({ page }) => {
+	mkdirSync(OUT_DIR, { recursive: true });
+	await captureSuite(page, "dark");
 });
