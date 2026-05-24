@@ -21,15 +21,19 @@ jobs:
     timeout-minutes: 15
     env:
       CI: true
-      TMPDIR: ${{ runner.temp }}
-      TMP: ${{ runner.temp }}
-      TEMP: ${{ runner.temp }}
+      TMPDIR: ${{ github.workspace }}/.tmp
+      TMP: ${{ github.workspace }}/.tmp
+      TEMP: ${{ github.workspace }}/.tmp
       PLAYWRIGHT_HTML_OPEN: never
       LOCAL_CI_SCANNER: /Users/agents/Agents/Shared/skills/local-ci-cd/scripts/scan-local-ci-processes.py
       OPENCONCHO_PROCESS_PATTERN: node|pnpm|vite|playwright|vitest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Prepare workspace temp
+        shell: bash
+        run: mkdir -p "${TMPDIR}"
 
       - name: Setup pnpm and Node.js
         uses: ./.github/actions/setup
