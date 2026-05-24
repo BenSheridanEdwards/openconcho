@@ -153,7 +153,7 @@ describe("Fleet query route", () => {
 
 		renderAt("/fleet-query?q=ben&peer=ben&view=merged");
 
-		// All eight conclusions should render (2 + 3 + 1 = 6 unique items across 3 instances)
+		// All six conclusions should render (2 + 3 + 1 = 6 items across 3 instances).
 		await waitFor(() => {
 			expect(screen.getByText(/Ben works on CodeWalnut/)).toBeInTheDocument();
 			expect(screen.getByText(/Ben is the Chief/)).toBeInTheDocument();

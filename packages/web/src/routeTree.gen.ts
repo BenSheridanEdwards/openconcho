@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SeedKitsRouteImport } from './routes/seed-kits'
 import { Route as FleetQueryRouteImport } from './routes/fleet-query'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CompareRouteImport } from './routes/compare'
@@ -19,9 +20,11 @@ import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces_.
 import { Route as WorkspacesWorkspaceIdWebhooksRouteImport } from './routes/workspaces_.$workspaceId_.webhooks'
 import { Route as WorkspacesWorkspaceIdSessionsRouteImport } from './routes/workspaces_.$workspaceId_.sessions'
 import { Route as WorkspacesWorkspaceIdPeersRouteImport } from './routes/workspaces_.$workspaceId_.peers'
+import { Route as WorkspacesWorkspaceIdDreamsRouteImport } from './routes/workspaces_.$workspaceId_.dreams'
 import { Route as WorkspacesWorkspaceIdConclusionsRouteImport } from './routes/workspaces_.$workspaceId_.conclusions'
 import { Route as WorkspacesWorkspaceIdSessionsSessionIdRouteImport } from './routes/workspaces_.$workspaceId_.sessions_.$sessionId'
 import { Route as WorkspacesWorkspaceIdPeersPeerIdRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId'
+import { Route as WorkspacesWorkspaceIdPeersPeerIdPlaygroundRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId_.playground'
 import { Route as WorkspacesWorkspaceIdPeersPeerIdChatRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId_.chat'
 
 const WorkspacesRoute = WorkspacesRouteImport.update({
@@ -32,6 +35,11 @@ const WorkspacesRoute = WorkspacesRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeedKitsRoute = SeedKitsRouteImport.update({
+  id: '/seed-kits',
+  path: '/seed-kits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FleetQueryRoute = FleetQueryRouteImport.update({
@@ -77,6 +85,12 @@ const WorkspacesWorkspaceIdPeersRoute =
     path: '/workspaces/$workspaceId/peers',
     getParentRoute: () => rootRouteImport,
   } as any)
+const WorkspacesWorkspaceIdDreamsRoute =
+  WorkspacesWorkspaceIdDreamsRouteImport.update({
+    id: '/workspaces_/$workspaceId_/dreams',
+    path: '/workspaces/$workspaceId/dreams',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WorkspacesWorkspaceIdConclusionsRoute =
   WorkspacesWorkspaceIdConclusionsRouteImport.update({
     id: '/workspaces_/$workspaceId_/conclusions',
@@ -95,6 +109,12 @@ const WorkspacesWorkspaceIdPeersPeerIdRoute =
     path: '/workspaces/$workspaceId/peers/$peerId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute =
+  WorkspacesWorkspaceIdPeersPeerIdPlaygroundRouteImport.update({
+    id: '/workspaces_/$workspaceId_/peers_/$peerId_/playground',
+    path: '/workspaces/$workspaceId/peers/$peerId/playground',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WorkspacesWorkspaceIdPeersPeerIdChatRoute =
   WorkspacesWorkspaceIdPeersPeerIdChatRouteImport.update({
     id: '/workspaces_/$workspaceId_/peers_/$peerId_/chat',
@@ -107,32 +127,38 @@ export interface FileRoutesByFullPath {
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/fleet-query': typeof FleetQueryRoute
+  '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces/$workspaceId/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces/$workspaceId/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
   '/workspaces/$workspaceId/peers/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   '/workspaces/$workspaceId/sessions/$sessionId': typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   '/workspaces/$workspaceId/peers/$peerId/chat': typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  '/workspaces/$workspaceId/peers/$peerId/playground': typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/fleet-query': typeof FleetQueryRoute
+  '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces/$workspaceId/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces/$workspaceId/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
   '/workspaces/$workspaceId/peers/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   '/workspaces/$workspaceId/sessions/$sessionId': typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   '/workspaces/$workspaceId/peers/$peerId/chat': typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  '/workspaces/$workspaceId/peers/$peerId/playground': typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -140,16 +166,19 @@ export interface FileRoutesById {
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/fleet-query': typeof FleetQueryRoute
+  '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces_/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces_/$workspaceId_/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces_/$workspaceId_/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces_/$workspaceId_/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces_/$workspaceId_/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces_/$workspaceId_/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
   '/workspaces_/$workspaceId_/peers_/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   '/workspaces_/$workspaceId_/sessions_/$sessionId': typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   '/workspaces_/$workspaceId_/peers_/$peerId_/chat': typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  '/workspaces_/$workspaceId_/peers_/$peerId_/playground': typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,48 +187,57 @@ export interface FileRouteTypes {
     | '/compare'
     | '/explore'
     | '/fleet-query'
+    | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
+    | '/workspaces/$workspaceId/dreams'
     | '/workspaces/$workspaceId/peers'
     | '/workspaces/$workspaceId/sessions'
     | '/workspaces/$workspaceId/webhooks'
     | '/workspaces/$workspaceId/peers/$peerId'
     | '/workspaces/$workspaceId/sessions/$sessionId'
     | '/workspaces/$workspaceId/peers/$peerId/chat'
+    | '/workspaces/$workspaceId/peers/$peerId/playground'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/compare'
     | '/explore'
     | '/fleet-query'
+    | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
+    | '/workspaces/$workspaceId/dreams'
     | '/workspaces/$workspaceId/peers'
     | '/workspaces/$workspaceId/sessions'
     | '/workspaces/$workspaceId/webhooks'
     | '/workspaces/$workspaceId/peers/$peerId'
     | '/workspaces/$workspaceId/sessions/$sessionId'
     | '/workspaces/$workspaceId/peers/$peerId/chat'
+    | '/workspaces/$workspaceId/peers/$peerId/playground'
   id:
     | '__root__'
     | '/'
     | '/compare'
     | '/explore'
     | '/fleet-query'
+    | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces_/$workspaceId'
     | '/workspaces_/$workspaceId_/conclusions'
+    | '/workspaces_/$workspaceId_/dreams'
     | '/workspaces_/$workspaceId_/peers'
     | '/workspaces_/$workspaceId_/sessions'
     | '/workspaces_/$workspaceId_/webhooks'
     | '/workspaces_/$workspaceId_/peers_/$peerId'
     | '/workspaces_/$workspaceId_/sessions_/$sessionId'
     | '/workspaces_/$workspaceId_/peers_/$peerId_/chat'
+    | '/workspaces_/$workspaceId_/peers_/$peerId_/playground'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -207,16 +245,19 @@ export interface RootRouteChildren {
   CompareRoute: typeof CompareRoute
   ExploreRoute: typeof ExploreRoute
   FleetQueryRoute: typeof FleetQueryRoute
+  SeedKitsRoute: typeof SeedKitsRoute
   SettingsRoute: typeof SettingsRoute
   WorkspacesRoute: typeof WorkspacesRoute
   WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
   WorkspacesWorkspaceIdConclusionsRoute: typeof WorkspacesWorkspaceIdConclusionsRoute
+  WorkspacesWorkspaceIdDreamsRoute: typeof WorkspacesWorkspaceIdDreamsRoute
   WorkspacesWorkspaceIdPeersRoute: typeof WorkspacesWorkspaceIdPeersRoute
   WorkspacesWorkspaceIdSessionsRoute: typeof WorkspacesWorkspaceIdSessionsRoute
   WorkspacesWorkspaceIdWebhooksRoute: typeof WorkspacesWorkspaceIdWebhooksRoute
   WorkspacesWorkspaceIdPeersPeerIdRoute: typeof WorkspacesWorkspaceIdPeersPeerIdRoute
   WorkspacesWorkspaceIdSessionsSessionIdRoute: typeof WorkspacesWorkspaceIdSessionsSessionIdRoute
   WorkspacesWorkspaceIdPeersPeerIdChatRoute: typeof WorkspacesWorkspaceIdPeersPeerIdChatRoute
+  WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute: typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -233,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seed-kits': {
+      id: '/seed-kits'
+      path: '/seed-kits'
+      fullPath: '/seed-kits'
+      preLoaderRoute: typeof SeedKitsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fleet-query': {
@@ -291,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspacesWorkspaceIdPeersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workspaces_/$workspaceId_/dreams': {
+      id: '/workspaces_/$workspaceId_/dreams'
+      path: '/workspaces/$workspaceId/dreams'
+      fullPath: '/workspaces/$workspaceId/dreams'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdDreamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspaces_/$workspaceId_/conclusions': {
       id: '/workspaces_/$workspaceId_/conclusions'
       path: '/workspaces/$workspaceId/conclusions'
@@ -312,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspacesWorkspaceIdPeersPeerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workspaces_/$workspaceId_/peers_/$peerId_/playground': {
+      id: '/workspaces_/$workspaceId_/peers_/$peerId_/playground'
+      path: '/workspaces/$workspaceId/peers/$peerId/playground'
+      fullPath: '/workspaces/$workspaceId/peers/$peerId/playground'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdPeersPeerIdPlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspaces_/$workspaceId_/peers_/$peerId_/chat': {
       id: '/workspaces_/$workspaceId_/peers_/$peerId_/chat'
       path: '/workspaces/$workspaceId/peers/$peerId/chat'
@@ -327,10 +389,12 @@ const rootRouteChildren: RootRouteChildren = {
   CompareRoute: CompareRoute,
   ExploreRoute: ExploreRoute,
   FleetQueryRoute: FleetQueryRoute,
+  SeedKitsRoute: SeedKitsRoute,
   SettingsRoute: SettingsRoute,
   WorkspacesRoute: WorkspacesRoute,
   WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
   WorkspacesWorkspaceIdConclusionsRoute: WorkspacesWorkspaceIdConclusionsRoute,
+  WorkspacesWorkspaceIdDreamsRoute: WorkspacesWorkspaceIdDreamsRoute,
   WorkspacesWorkspaceIdPeersRoute: WorkspacesWorkspaceIdPeersRoute,
   WorkspacesWorkspaceIdSessionsRoute: WorkspacesWorkspaceIdSessionsRoute,
   WorkspacesWorkspaceIdWebhooksRoute: WorkspacesWorkspaceIdWebhooksRoute,
@@ -339,6 +403,8 @@ const rootRouteChildren: RootRouteChildren = {
     WorkspacesWorkspaceIdSessionsSessionIdRoute,
   WorkspacesWorkspaceIdPeersPeerIdChatRoute:
     WorkspacesWorkspaceIdPeersPeerIdChatRoute,
+  WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute:
+    WorkspacesWorkspaceIdPeersPeerIdPlaygroundRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
