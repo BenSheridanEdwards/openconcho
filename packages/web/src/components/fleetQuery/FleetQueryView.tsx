@@ -5,6 +5,8 @@ import { Eye, Layers, Network, Search } from "lucide-react";
 import { useMemo } from "react";
 import {
 	deriveObserverFromWorkspaceId,
+	type PeersListResponse,
+	scopedPeersQueryOptions,
 	scopedQueryConclusionsQueryOptions,
 	scopedWorkspacesQueryOptions,
 	type WorkspacesListResponse,
@@ -103,6 +105,37 @@ export function FleetQueryView() {
 		return map;
 	}, [selected, workspacesResults]);
 
+	// Step 1b: fan out peers/list per selected instance, then union the IDs so
+	// the "About peer" dropdown shows every peer the fleet collectively knows.
+	const peersResults = useQueries({
+		queries: selected.map((inst) => {
+			const wsId = workspaceByInstance.get(inst.id) ?? "";
+			return scopedPeersQueryOptions(inst, wsId);
+		}),
+	});
+
+	const availablePeers = useMemo<string[]>(() => {
+		const ids = new Set<string>();
+		selected.forEach((inst, idx) => {
+			const items = (peersResults[idx]?.data as PeersListResponse | undefined)?.items ?? [];
+			const observer = deriveObserverFromWorkspaceId(workspaceByInstance.get(inst.id) ?? "");
+			for (const p of items) {
+				// Skip each instance's own "self" peer — it can't be the observed.
+				if (p.id && p.id !== observer) ids.add(p.id);
+			}
+		});
+		// Stable order: alphabetical, with the default peer pinned to the top if present.
+		const sorted = [...ids].sort((a, b) => a.localeCompare(b));
+		const idx = sorted.indexOf(DEFAULT_PEER);
+		if (idx > 0) {
+			sorted.splice(idx, 1);
+			sorted.unshift(DEFAULT_PEER);
+		}
+		return sorted;
+	}, [selected, peersResults, workspaceByInstance]);
+
+	const peersLoading = peersResults.some((r) => r.isLoading);
+
 	// Step 2: run the semantic query against each instance's first workspace.
 	// Honcho's conclusions/query requires BOTH observer_id and observed_id —
 	// observer is the agent's "self" peer (derived from the workspace ID),
@@ -158,7 +191,7 @@ export function FleetQueryView() {
 
 	if (instances.length === 0) {
 		return (
-			<div className="page-container">
+			<div className="page-container page-container--wide">
 				<PageTitle>Fleet query</PageTitle>
 				<Body className="mt-2">
 					Configure at least one Honcho instance in Settings before querying the fleet.
@@ -168,7 +201,7 @@ export function FleetQueryView() {
 	}
 
 	return (
-		<div className="page-container">
+		<div className="page-container page-container--wide">
 			<motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
 				<div className="flex items-center gap-2 mb-1">
 					<Network className="w-5 h-5" style={{ color: "var(--accent)" }} strokeWidth={1.5} />
@@ -215,15 +248,31 @@ export function FleetQueryView() {
 						>
 							About peer
 						</label>
-						<Input
+						<select
 							id="fleet-query-peer"
 							name="peer"
-							type="text"
+							key={peer}
 							defaultValue={peer}
-							placeholder={DEFAULT_PEER}
-							className="rounded-xl px-3 py-2.5 font-mono w-32"
+							disabled={availablePeers.length === 0}
+							className="rounded-xl px-3 py-2.5 text-sm font-mono outline-none transition-colors"
+							style={{
+								background: "var(--surface)",
+								color: "var(--text-1)",
+								border: "1px solid var(--border-2)",
+								minWidth: "10rem",
+							}}
 							aria-label="Peer name"
-						/>
+						>
+							{peer && !availablePeers.includes(peer) && <option value={peer}>{peer}</option>}
+							{availablePeers.length === 0 && (
+								<option value="">{peersLoading ? "Loading peers…" : "No peers discovered"}</option>
+							)}
+							{availablePeers.map((p) => (
+								<option key={p} value={p}>
+									{p}
+								</option>
+							))}
+						</select>
 					</div>
 					<Button type="submit" variant="primary" className="rounded-xl">
 						Search

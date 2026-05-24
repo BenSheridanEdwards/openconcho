@@ -4,6 +4,7 @@ import { createScopedClient } from "@/api/scopedClient";
 import type { Instance } from "@/lib/config";
 
 type Workspace = components["schemas"]["Workspace"];
+type Peer = components["schemas"]["Peer"];
 type Conclusion = components["schemas"]["Conclusion"];
 
 function err(e: unknown): never {
@@ -14,9 +15,19 @@ function err(e: unknown): never {
 const FK = {
 	workspaces: (instId: string, page: number, size: number) =>
 		["fleet", instId, "workspaces", page, size] as const,
+	peers: (instId: string, wsId: string, page: number, size: number) =>
+		["fleet", instId, "peers", wsId, page, size] as const,
 	conclusionsQuery: (instId: string, wsId: string, q: string, filters: Record<string, unknown>) =>
 		["fleet", instId, "conclusions-query", wsId, q, filters] as const,
 };
+
+export interface PeersListResponse {
+	items?: Peer[];
+	total?: number;
+	page?: number;
+	size?: number;
+	pages?: number;
+}
 
 export interface WorkspacesListResponse {
 	items?: Workspace[];
@@ -41,6 +52,26 @@ export function scopedWorkspacesQueryOptions(
 			});
 			return (data as WorkspacesListResponse) ?? err(error);
 		},
+	};
+}
+
+export function scopedPeersQueryOptions(
+	instance: Instance,
+	workspaceId: string,
+	page = 1,
+	pageSize = 100,
+): UseQueryOptions<PeersListResponse> {
+	return {
+		queryKey: [...FK.peers(instance.id, workspaceId, page, pageSize)],
+		queryFn: async () => {
+			const client = createScopedClient(instance);
+			const { data, error } = await client.POST("/v3/workspaces/{workspace_id}/peers/list", {
+				params: { path: { workspace_id: workspaceId }, query: { page, page_size: pageSize } },
+				body: {},
+			});
+			return (data as PeersListResponse) ?? err(error);
+		},
+		enabled: Boolean(workspaceId),
 	};
 }
 
