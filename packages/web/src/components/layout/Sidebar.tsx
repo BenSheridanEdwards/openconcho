@@ -9,6 +9,7 @@ import {
 	Columns2,
 	Eye,
 	EyeOff,
+	GitCompare,
 	LayoutDashboard,
 	Lightbulb,
 	MessageSquare,
@@ -38,6 +39,7 @@ const WORKSPACE_SECTIONS = [
 	{ label: "Peers", icon: Users, section: "peers" },
 	{ label: "Sessions", icon: MessageSquare, section: "sessions" },
 	{ label: "Conclusions", icon: Lightbulb, section: "conclusions" },
+	{ label: "Diff", icon: GitCompare, section: "diff" },
 	{ label: "Webhooks", icon: Webhook, section: "webhooks" },
 ] as const;
 
