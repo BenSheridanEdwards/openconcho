@@ -239,7 +239,9 @@ export function ConclusionDiffView() {
 			>
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
 					<div>
-						<Label htmlFor="observed-id">Observed peer (optional)</Label>
+						<Label htmlFor="observed-id" className="mb-1.5">
+							Observed peer (optional)
+						</Label>
 						<Input
 							id="observed-id"
 							value={observedId}
@@ -249,7 +251,9 @@ export function ConclusionDiffView() {
 						/>
 					</div>
 					<div>
-						<Label htmlFor="observer-id">Observer peer (optional)</Label>
+						<Label htmlFor="observer-id" className="mb-1.5">
+							Observer peer (optional)
+						</Label>
 						<Input
 							id="observer-id"
 							value={observerId}
@@ -259,23 +263,27 @@ export function ConclusionDiffView() {
 						/>
 					</div>
 					<div>
-						<Label htmlFor="before-ts">Before</Label>
+						<Label htmlFor="before-ts" className="mb-1.5">
+							Before
+						</Label>
 						<Input
 							id="before-ts"
 							type="datetime-local"
 							value={beforeInput}
 							onChange={(e) => setBeforeInput(e.target.value)}
-							className="font-mono"
+							className="font-mono [&::-webkit-datetime-edit]:flex-1 [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
 						/>
 					</div>
 					<div>
-						<Label htmlFor="after-ts">After</Label>
+						<Label htmlFor="after-ts" className="mb-1.5">
+							After
+						</Label>
 						<Input
 							id="after-ts"
 							type="datetime-local"
 							value={afterInput}
 							onChange={(e) => setAfterInput(e.target.value)}
-							className="font-mono"
+							className="font-mono [&::-webkit-datetime-edit]:flex-1 [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
 						/>
 					</div>
 				</div>
