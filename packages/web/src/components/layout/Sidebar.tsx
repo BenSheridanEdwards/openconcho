@@ -14,6 +14,7 @@ import {
 	MessageSquare,
 	Moon,
 	Settings,
+	ShieldCheck,
 	Sun,
 	Users,
 	Webhook,
@@ -31,6 +32,7 @@ const TOP_NAV = [
 	{ to: "/" as const, label: "Dashboard", icon: LayoutDashboard, exact: true },
 	{ to: "/workspaces" as const, label: "Workspaces", icon: Boxes, exact: false },
 	{ to: "/compare" as const, label: "Compare", icon: Columns2, exact: false },
+	{ to: "/audit" as const, label: "Audit", icon: ShieldCheck, exact: false },
 	{ to: "/settings" as const, label: "Settings", icon: Settings, exact: false },
 ];
 
