@@ -6,11 +6,13 @@
 //   pnpm --filter @openconcho/web exec vite --port 5175 --strictPort &
 //   node packages/web/scripts/capture-audit-screenshots.mjs
 //
-// Seeds 5 mock instances mirroring the Hermes fleet, navigates to /audit in
-// each theme, waits for the rows to render, and writes two PNGs into
-// docs/identity-audit/. The seeded baseUrls don't resolve, so every row
-// settles into the "Workspace fetch failed" error state — which is the point:
-// this is the audit's offline preview.
+// Seeds 5 instances pointing at the Hermes fleet's actual Honcho processes
+// (localhost:8001-8005), navigates to /audit in each theme, waits for every
+// row to leave the loading state, and writes two PNGs into
+// docs/identity-audit/. Chromium runs with web security disabled so the
+// browser doesn't block the per-instance CORS allowlist — the real desktop
+// client achieves the same thing via Tauri's Rust-backed fetch (see lib/http
+// .ts). If the fleet isn't running, rows render their error state instead.
 
 import { mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
