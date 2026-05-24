@@ -7,6 +7,7 @@ const SECTION_LABELS: Record<string, string> = {
 	sessions: "Sessions",
 	conclusions: "Conclusions",
 	dreams: "Dreams",
+	diff: "Diff",
 	webhooks: "Webhooks",
 	chat: "Chat",
 };

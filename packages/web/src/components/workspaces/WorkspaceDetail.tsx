@@ -4,6 +4,7 @@ import {
 	Boxes,
 	ChevronDown,
 	CircleDot,
+	GitCompare,
 	Lightbulb,
 	MessageSquare,
 	Trash2,
@@ -43,6 +44,12 @@ const NAV_SECTIONS = [
 		icon: Lightbulb,
 		to: "conclusions" as const,
 		description: "Browse memory conclusions",
+	},
+	{
+		label: "Diff",
+		icon: GitCompare,
+		to: "diff" as const,
+		description: "Compare conclusions across two timestamps",
 	},
 	{
 		label: "Webhooks",
