@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SeedKitsRouteImport } from './routes/seed-kits'
+import { Route as FleetQueryRouteImport } from './routes/fleet-query'
 import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CompareRouteImport } from './routes/compare'
@@ -40,6 +41,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const SeedKitsRoute = SeedKitsRouteImport.update({
   id: '/seed-kits',
   path: '/seed-kits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FleetQueryRoute = FleetQueryRouteImport.update({
+  id: '/fleet-query',
+  path: '/fleet-query',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FleetRoute = FleetRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/fleet': typeof FleetRoute
+  '/fleet-query': typeof FleetQueryRoute
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/fleet': typeof FleetRoute
+  '/fleet-query': typeof FleetQueryRoute
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
   '/fleet': typeof FleetRoute
+  '/fleet-query': typeof FleetQueryRoute
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/explore'
     | '/fleet'
+    | '/fleet-query'
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/explore'
     | '/fleet'
+    | '/fleet-query'
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/explore'
     | '/fleet'
+    | '/fleet-query'
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   CompareRoute: typeof CompareRoute
   ExploreRoute: typeof ExploreRoute
   FleetRoute: typeof FleetRoute
+  FleetQueryRoute: typeof FleetQueryRoute
   SeedKitsRoute: typeof SeedKitsRoute
   SettingsRoute: typeof SettingsRoute
   WorkspacesRoute: typeof WorkspacesRoute
@@ -281,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/seed-kits'
       fullPath: '/seed-kits'
       preLoaderRoute: typeof SeedKitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fleet-query': {
+      id: '/fleet-query'
+      path: '/fleet-query'
+      fullPath: '/fleet-query'
+      preLoaderRoute: typeof FleetQueryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fleet': {
@@ -389,6 +409,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompareRoute: CompareRoute,
   ExploreRoute: ExploreRoute,
   FleetRoute: FleetRoute,
+  FleetQueryRoute: FleetQueryRoute,
   SeedKitsRoute: SeedKitsRoute,
   SettingsRoute: SettingsRoute,
   WorkspacesRoute: WorkspacesRoute,
