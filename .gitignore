@@ -45,3 +45,6 @@ packages/desktop/src-tauri/gen/
 # Coverage reports
 packages/*/coverage/
 coverage/
+
+# Drafts from scripts/pr-evidence.sh
+PR_BODY.md
