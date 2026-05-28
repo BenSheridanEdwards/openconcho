@@ -9,18 +9,23 @@ import {
 	Columns2,
 	Eye,
 	EyeOff,
+	GitCompare,
 	Layers,
 	LayoutDashboard,
 	Lightbulb,
 	MessageSquare,
 	Moon,
 	MoonStar,
+	Network,
 	Settings,
+	ShieldCheck,
+	Sparkles,
 	Sun,
 	Users,
 	Webhook,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { FleetDreamDialog } from "@/components/fleet/FleetDreamDialog";
 import { HealthDot } from "@/components/shared/HealthDot";
 import { useDemo } from "@/hooks/useDemo";
 import { useHealthStatus } from "@/hooks/useHealthStatus";
@@ -31,9 +36,12 @@ import { COLOR } from "@/lib/constants";
 
 const TOP_NAV = [
 	{ to: "/" as const, label: "Dashboard", icon: LayoutDashboard, exact: true },
+	{ to: "/fleet" as const, label: "Fleet", icon: Network, exact: false },
 	{ to: "/workspaces" as const, label: "Workspaces", icon: Boxes, exact: false },
 	{ to: "/compare" as const, label: "Compare", icon: Columns2, exact: false },
+	{ to: "/fleet-query" as const, label: "Fleet query", icon: Network, exact: false },
 	{ to: "/seed-kits" as const, label: "Seed Kits", icon: Layers, exact: false },
+	{ to: "/audit" as const, label: "Audit", icon: ShieldCheck, exact: false },
 	{ to: "/settings" as const, label: "Settings", icon: Settings, exact: false },
 ];
 
@@ -42,6 +50,7 @@ const WORKSPACE_SECTIONS = [
 	{ label: "Sessions", icon: MessageSquare, section: "sessions" },
 	{ label: "Conclusions", icon: Lightbulb, section: "conclusions" },
 	{ label: "Dreams", icon: MoonStar, section: "dreams" },
+	{ label: "Diff", icon: GitCompare, section: "diff" },
 	{ label: "Webhooks", icon: Webhook, section: "webhooks" },
 ] as const;
 
@@ -53,6 +62,7 @@ export function Sidebar() {
 	const { showMetadata, toggle: toggleMeta } = useMetadata();
 	const { data: health } = useHealthStatus();
 	const [switcherOpen, setSwitcherOpen] = useState(false);
+	const [fleetDreamOpen, setFleetDreamOpen] = useState(false);
 	const switcherRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
@@ -294,11 +304,31 @@ export function Sidebar() {
 				</AnimatePresence>
 			</nav>
 
-			{/* Footer — version, demo, metadata, theme */}
-			<div
-				className="px-3 sm:px-5 py-3 flex items-center justify-between"
-				style={{ borderTop: "1px solid var(--border)" }}
-			>
+			{/* Footer — fleet action, version, demo, metadata, theme */}
+			<div className="px-3 sm:px-5 pt-3" style={{ borderTop: "1px solid var(--border)" }}>
+				<button
+					type="button"
+					onClick={() => setFleetDreamOpen(true)}
+					disabled={instances.length === 0}
+					title={
+						instances.length === 0
+							? "Configure an instance first"
+							: "Trigger dreams across every configured instance"
+					}
+					className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors justify-center sm:justify-start"
+					style={{
+						background: "var(--accent-dim)",
+						color: "var(--accent-text)",
+						border: "1px solid var(--accent-border)",
+						opacity: instances.length === 0 ? 0.4 : 1,
+						cursor: instances.length === 0 ? "not-allowed" : "pointer",
+					}}
+				>
+					<Sparkles className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+					<span className="hidden sm:block">Dream fleet</span>
+				</button>
+			</div>
+			<div className="px-3 sm:px-5 py-3 flex items-center justify-between">
 				<p className="text-xs font-mono hidden sm:block" style={{ color: "var(--text-4)" }}>
 					v{__APP_VERSION__}
 				</p>
@@ -352,6 +382,8 @@ export function Sidebar() {
 					</button>
 				</div>
 			</div>
+
+			<FleetDreamDialog open={fleetDreamOpen} onClose={() => setFleetDreamOpen(false)} />
 		</motion.aside>
 	);
 }

@@ -4,6 +4,7 @@ import {
 	Boxes,
 	ChevronDown,
 	CircleDot,
+	GitCompare,
 	Lightbulb,
 	MessageSquare,
 	Trash2,
@@ -43,6 +44,12 @@ const NAV_SECTIONS = [
 		icon: Lightbulb,
 		to: "conclusions" as const,
 		description: "Browse memory conclusions",
+	},
+	{
+		label: "Diff",
+		icon: GitCompare,
+		to: "diff" as const,
+		description: "Compare conclusions across two timestamps",
 	},
 	{
 		label: "Webhooks",
@@ -89,7 +96,7 @@ export function WorkspaceDetail() {
 					<div className="flex items-center gap-2 flex-shrink-0">
 						<Button variant="accent" size="sm" onClick={() => setDreamOpen(true)}>
 							<Zap className="w-3.5 h-3.5" strokeWidth={2} />
-							Schedule Dream
+							Dream now
 						</Button>
 						<Button variant="destructive" size="sm" onClick={() => setConfirmDelete(true)}>
 							<Trash2 className="w-3.5 h-3.5" strokeWidth={2} />

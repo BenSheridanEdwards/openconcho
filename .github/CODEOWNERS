@@ -1,0 +1,37 @@
+# CODEOWNERS
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Owners are auto-requested for review on PRs touching their paths.
+# Branch protection on `main` requires CODEOWNERS approval for files
+# under their globs.
+
+# ─── Default owner ────────────────────────────────────────────────────────
+*                                       @BenSheridanEdwards
+
+# ─── Frontend (web) ───────────────────────────────────────────────────────
+/packages/web/                          @BenSheridanEdwards
+/packages/web/src/api/                  @BenSheridanEdwards
+/packages/web/src/routes/               @BenSheridanEdwards
+/packages/web/src/components/           @BenSheridanEdwards
+
+# ─── Desktop shell (Tauri) ────────────────────────────────────────────────
+/packages/desktop/                      @BenSheridanEdwards
+/packages/desktop/src-tauri/            @BenSheridanEdwards
+
+# ─── CI / infra ───────────────────────────────────────────────────────────
+/.github/                               @BenSheridanEdwards
+/.husky/                                @BenSheridanEdwards
+/Makefile                               @BenSheridanEdwards
+/scripts/                               @BenSheridanEdwards
+
+# ─── Agentic engineering surface ──────────────────────────────────────────
+# Anything an agent reads on session start — changes here affect every
+# future contributor and spawned session.
+/AGENTS.md                              @BenSheridanEdwards
+/CLAUDE.md                              @BenSheridanEdwards
+/.claude/                               @BenSheridanEdwards
+
+# ─── Documentation ────────────────────────────────────────────────────────
+/docs/                                  @BenSheridanEdwards
+/README.md                              @BenSheridanEdwards
+/CONTRIBUTING.md                        @BenSheridanEdwards
