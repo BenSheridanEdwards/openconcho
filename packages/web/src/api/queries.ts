@@ -659,6 +659,46 @@ export function useQueryConclusions(
 	});
 }
 
+// Fetches every conclusion matching the filters by walking pages. Used for
+// snapshot diffs where the caller needs the full set in memory to bucket by
+// timestamp; capped to avoid runaway loops if a workspace has unexpectedly many.
+const ALL_CONCLUSIONS_PAGE_SIZE = 100;
+const ALL_CONCLUSIONS_MAX_PAGES = 50;
+
+export function useAllConclusions(
+	workspaceId: string,
+	filters: Record<string, unknown> = {},
+	enabled = true,
+) {
+	return useQuery({
+		queryKey: QK.conclusionsAll(workspaceId, filters),
+		queryFn: async () => {
+			const collected: unknown[] = [];
+			let page = 1;
+			while (page <= ALL_CONCLUSIONS_MAX_PAGES) {
+				const { data, error } = await client.current.POST(
+					"/v3/workspaces/{workspace_id}/conclusions/list",
+					{
+						params: {
+							path: { workspace_id: workspaceId },
+							query: { page, page_size: ALL_CONCLUSIONS_PAGE_SIZE, reverse: false },
+						},
+						body: filters,
+					},
+				);
+				if (error) err(error);
+				const items = (data as { items?: unknown[] } | undefined)?.items ?? [];
+				collected.push(...items);
+				const totalPages = (data as { pages?: number } | undefined)?.pages ?? 1;
+				if (page >= totalPages || items.length === 0) break;
+				page += 1;
+			}
+			return collected;
+		},
+		enabled: enabled && Boolean(workspaceId),
+	});
+}
+
 export function useCreateConclusion(workspaceId: string) {
 	const qc = useQueryClient();
 	return useMutation({

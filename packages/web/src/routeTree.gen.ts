@@ -12,14 +12,18 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SeedKitsRouteImport } from './routes/seed-kits'
+import { Route as FleetQueryRouteImport } from './routes/fleet-query'
+import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces_.$workspaceId'
 import { Route as WorkspacesWorkspaceIdWebhooksRouteImport } from './routes/workspaces_.$workspaceId_.webhooks'
 import { Route as WorkspacesWorkspaceIdSessionsRouteImport } from './routes/workspaces_.$workspaceId_.sessions'
 import { Route as WorkspacesWorkspaceIdPeersRouteImport } from './routes/workspaces_.$workspaceId_.peers'
 import { Route as WorkspacesWorkspaceIdDreamsRouteImport } from './routes/workspaces_.$workspaceId_.dreams'
+import { Route as WorkspacesWorkspaceIdDiffRouteImport } from './routes/workspaces_.$workspaceId_.diff'
 import { Route as WorkspacesWorkspaceIdConclusionsRouteImport } from './routes/workspaces_.$workspaceId_.conclusions'
 import { Route as WorkspacesWorkspaceIdSessionsSessionIdRouteImport } from './routes/workspaces_.$workspaceId_.sessions_.$sessionId'
 import { Route as WorkspacesWorkspaceIdPeersPeerIdRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId'
@@ -41,6 +45,16 @@ const SeedKitsRoute = SeedKitsRouteImport.update({
   path: '/seed-kits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FleetQueryRoute = FleetQueryRouteImport.update({
+  id: '/fleet-query',
+  path: '/fleet-query',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FleetRoute = FleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
@@ -49,6 +63,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -85,6 +104,12 @@ const WorkspacesWorkspaceIdDreamsRoute =
     path: '/workspaces/$workspaceId/dreams',
     getParentRoute: () => rootRouteImport,
   } as any)
+const WorkspacesWorkspaceIdDiffRoute =
+  WorkspacesWorkspaceIdDiffRouteImport.update({
+    id: '/workspaces_/$workspaceId_/diff',
+    path: '/workspaces/$workspaceId/diff',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WorkspacesWorkspaceIdConclusionsRoute =
   WorkspacesWorkspaceIdConclusionsRouteImport.update({
     id: '/workspaces_/$workspaceId_/conclusions',
@@ -118,13 +143,17 @@ const WorkspacesWorkspaceIdPeersPeerIdChatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
+  '/fleet': typeof FleetRoute
+  '/fleet-query': typeof FleetQueryRoute
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces/$workspaceId/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces/$workspaceId/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
@@ -136,13 +165,17 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
+  '/fleet': typeof FleetRoute
+  '/fleet-query': typeof FleetQueryRoute
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces/$workspaceId/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces/$workspaceId/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
@@ -155,13 +188,17 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
+  '/fleet': typeof FleetRoute
+  '/fleet-query': typeof FleetQueryRoute
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces_/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces_/$workspaceId_/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces_/$workspaceId_/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces_/$workspaceId_/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces_/$workspaceId_/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces_/$workspaceId_/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
@@ -175,13 +212,17 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/audit'
     | '/compare'
     | '/explore'
+    | '/fleet'
+    | '/fleet-query'
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
+    | '/workspaces/$workspaceId/diff'
     | '/workspaces/$workspaceId/dreams'
     | '/workspaces/$workspaceId/peers'
     | '/workspaces/$workspaceId/sessions'
@@ -193,13 +234,17 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/audit'
     | '/compare'
     | '/explore'
+    | '/fleet'
+    | '/fleet-query'
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
+    | '/workspaces/$workspaceId/diff'
     | '/workspaces/$workspaceId/dreams'
     | '/workspaces/$workspaceId/peers'
     | '/workspaces/$workspaceId/sessions'
@@ -211,13 +256,17 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/audit'
     | '/compare'
     | '/explore'
+    | '/fleet'
+    | '/fleet-query'
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces_/$workspaceId'
     | '/workspaces_/$workspaceId_/conclusions'
+    | '/workspaces_/$workspaceId_/diff'
     | '/workspaces_/$workspaceId_/dreams'
     | '/workspaces_/$workspaceId_/peers'
     | '/workspaces_/$workspaceId_/sessions'
@@ -230,13 +279,17 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuditRoute: typeof AuditRoute
   CompareRoute: typeof CompareRoute
   ExploreRoute: typeof ExploreRoute
+  FleetRoute: typeof FleetRoute
+  FleetQueryRoute: typeof FleetQueryRoute
   SeedKitsRoute: typeof SeedKitsRoute
   SettingsRoute: typeof SettingsRoute
   WorkspacesRoute: typeof WorkspacesRoute
   WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
   WorkspacesWorkspaceIdConclusionsRoute: typeof WorkspacesWorkspaceIdConclusionsRoute
+  WorkspacesWorkspaceIdDiffRoute: typeof WorkspacesWorkspaceIdDiffRoute
   WorkspacesWorkspaceIdDreamsRoute: typeof WorkspacesWorkspaceIdDreamsRoute
   WorkspacesWorkspaceIdPeersRoute: typeof WorkspacesWorkspaceIdPeersRoute
   WorkspacesWorkspaceIdSessionsRoute: typeof WorkspacesWorkspaceIdSessionsRoute
@@ -270,6 +323,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeedKitsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fleet-query': {
+      id: '/fleet-query'
+      path: '/fleet-query'
+      fullPath: '/fleet-query'
+      preLoaderRoute: typeof FleetQueryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fleet': {
+      id: '/fleet'
+      path: '/fleet'
+      fullPath: '/fleet'
+      preLoaderRoute: typeof FleetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore': {
       id: '/explore'
       path: '/explore'
@@ -282,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/compare'
       fullPath: '/compare'
       preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -326,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspacesWorkspaceIdDreamsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workspaces_/$workspaceId_/diff': {
+      id: '/workspaces_/$workspaceId_/diff'
+      path: '/workspaces/$workspaceId/diff'
+      fullPath: '/workspaces/$workspaceId/diff'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdDiffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspaces_/$workspaceId_/conclusions': {
       id: '/workspaces_/$workspaceId_/conclusions'
       path: '/workspaces/$workspaceId/conclusions'
@@ -366,13 +447,17 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuditRoute: AuditRoute,
   CompareRoute: CompareRoute,
   ExploreRoute: ExploreRoute,
+  FleetRoute: FleetRoute,
+  FleetQueryRoute: FleetQueryRoute,
   SeedKitsRoute: SeedKitsRoute,
   SettingsRoute: SettingsRoute,
   WorkspacesRoute: WorkspacesRoute,
   WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
   WorkspacesWorkspaceIdConclusionsRoute: WorkspacesWorkspaceIdConclusionsRoute,
+  WorkspacesWorkspaceIdDiffRoute: WorkspacesWorkspaceIdDiffRoute,
   WorkspacesWorkspaceIdDreamsRoute: WorkspacesWorkspaceIdDreamsRoute,
   WorkspacesWorkspaceIdPeersRoute: WorkspacesWorkspaceIdPeersRoute,
   WorkspacesWorkspaceIdSessionsRoute: WorkspacesWorkspaceIdSessionsRoute,
