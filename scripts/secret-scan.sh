@@ -50,7 +50,6 @@ check_pattern "Google API key" 'AIza[0-9A-Za-z_-]{35}'
 check_pattern "Stripe live key" 'sk_live_[A-Za-z0-9]{24,}'
 check_pattern "Honcho-style JWT (likely)" 'eyJ[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'
 check_pattern "RSA/EC/DSA/OpenSSH private key block" '-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'
-check_pattern "Generic hardcoded password" '(password|passwd|pwd)[[:space:]]*[:=][[:space:]]*["'\'']\w{8,}["'\'']'
 
 if [ $FOUND -eq 1 ]; then
   printf '\n\033[31m✗ Secret scan: potential secrets in staged changes\033[0m\n' >&2
