@@ -22,5 +22,26 @@ export default defineConfig({
 		css: false,
 		include: ["src/**/*.{test,spec}.{ts,tsx}"],
 		exclude: ["node_modules", "dist", "e2e"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "html", "json-summary", "lcov"],
+			include: ["src/**/*.{ts,tsx}"],
+			exclude: [
+				"src/**/*.{test,spec}.{ts,tsx}",
+				"src/test/**",
+				"src/routeTree.gen.ts",
+				"src/api/schema.d.ts",
+				"src/main.tsx",
+				"src/vite-env.d.ts",
+			],
+			// Baseline floor from the current application coverage. Keep this
+			// truthful initially, then ratchet upward as feature tests grow.
+			thresholds: {
+				lines: 22,
+				functions: 14,
+				branches: 14,
+				statements: 22,
+			},
+		},
 	},
 });
