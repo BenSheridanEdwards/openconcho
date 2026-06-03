@@ -49,6 +49,10 @@ export function useStaleQueueDetection(
 			setLastCompleted(completed);
 			return;
 		}
+		if (completed < lastCompleted) {
+			setLastCompleted(completed);
+			return;
+		}
 		if (stalledSince === null) {
 			setStalledSince(Date.now());
 			setLastCompleted(completed);

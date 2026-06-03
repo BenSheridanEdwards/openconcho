@@ -173,4 +173,46 @@ describe("useStaleQueueDetection", () => {
 		expect(result.current.stalledSince).toBeNull();
 		expect(result.current.isStale).toBe(false);
 	});
+
+	it("recognizes forward progress after the completed counter is cleaned up", () => {
+		const stuck = buildStatus({
+			total_work_units: 120,
+			completed_work_units: 100,
+			in_progress_work_units: 2,
+			pending_work_units: 3,
+		});
+		const cleanedUp = buildStatus({
+			total_work_units: 20,
+			completed_work_units: 0,
+			in_progress_work_units: 2,
+			pending_work_units: 3,
+		});
+		const progressedAfterCleanup = buildStatus({
+			total_work_units: 20,
+			completed_work_units: 1,
+			in_progress_work_units: 2,
+			pending_work_units: 2,
+		});
+
+		const { result, rerender } = renderHook(({ data }) => useStaleQueueDetection(data), {
+			initialProps: { data: stuck },
+		});
+
+		act(() => {
+			vi.advanceTimersByTime(STALE_QUEUE_THRESHOLD_MS + 60_000);
+		});
+		expect(result.current.isStale).toBe(true);
+
+		rerender({ data: cleanedUp });
+		act(() => {
+			vi.advanceTimersByTime(0);
+		});
+		expect(result.current.isStale).toBe(true);
+
+		rerender({ data: progressedAfterCleanup });
+		act(() => {
+			vi.advanceTimersByTime(0);
+		});
+		expect(result.current.isStale).toBe(false);
+	});
 });
