@@ -19,8 +19,10 @@ import { Route as CompareRouteImport } from './routes/compare'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces_.$workspaceId'
+import { Route as DevDreamProgressRouteImport } from './routes/_dev.dream-progress'
 import { Route as WorkspacesWorkspaceIdWebhooksRouteImport } from './routes/workspaces_.$workspaceId_.webhooks'
 import { Route as WorkspacesWorkspaceIdSessionsRouteImport } from './routes/workspaces_.$workspaceId_.sessions'
+import { Route as WorkspacesWorkspaceIdQueueRouteImport } from './routes/workspaces_.$workspaceId_.queue'
 import { Route as WorkspacesWorkspaceIdPeersRouteImport } from './routes/workspaces_.$workspaceId_.peers'
 import { Route as WorkspacesWorkspaceIdDreamsRouteImport } from './routes/workspaces_.$workspaceId_.dreams'
 import { Route as WorkspacesWorkspaceIdDiffRouteImport } from './routes/workspaces_.$workspaceId_.diff'
@@ -80,6 +82,11 @@ const WorkspacesWorkspaceIdRoute = WorkspacesWorkspaceIdRouteImport.update({
   path: '/workspaces/$workspaceId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevDreamProgressRoute = DevDreamProgressRouteImport.update({
+  id: '/_dev/dream-progress',
+  path: '/dream-progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkspacesWorkspaceIdWebhooksRoute =
   WorkspacesWorkspaceIdWebhooksRouteImport.update({
     id: '/workspaces_/$workspaceId_/webhooks',
@@ -90,6 +97,12 @@ const WorkspacesWorkspaceIdSessionsRoute =
   WorkspacesWorkspaceIdSessionsRouteImport.update({
     id: '/workspaces_/$workspaceId_/sessions',
     path: '/workspaces/$workspaceId/sessions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const WorkspacesWorkspaceIdQueueRoute =
+  WorkspacesWorkspaceIdQueueRouteImport.update({
+    id: '/workspaces_/$workspaceId_/queue',
+    path: '/workspaces/$workspaceId/queue',
     getParentRoute: () => rootRouteImport,
   } as any)
 const WorkspacesWorkspaceIdPeersRoute =
@@ -151,11 +164,13 @@ export interface FileRoutesByFullPath {
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
+  '/dream-progress': typeof DevDreamProgressRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
   '/workspaces/$workspaceId/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces/$workspaceId/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
+  '/workspaces/$workspaceId/queue': typeof WorkspacesWorkspaceIdQueueRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces/$workspaceId/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
   '/workspaces/$workspaceId/peers/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
@@ -173,11 +188,13 @@ export interface FileRoutesByTo {
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
+  '/dream-progress': typeof DevDreamProgressRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
   '/workspaces/$workspaceId/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces/$workspaceId/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
+  '/workspaces/$workspaceId/queue': typeof WorkspacesWorkspaceIdQueueRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces/$workspaceId/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
   '/workspaces/$workspaceId/peers/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
@@ -196,11 +213,13 @@ export interface FileRoutesById {
   '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
+  '/_dev/dream-progress': typeof DevDreamProgressRoute
   '/workspaces_/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces_/$workspaceId_/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
   '/workspaces_/$workspaceId_/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces_/$workspaceId_/dreams': typeof WorkspacesWorkspaceIdDreamsRoute
   '/workspaces_/$workspaceId_/peers': typeof WorkspacesWorkspaceIdPeersRoute
+  '/workspaces_/$workspaceId_/queue': typeof WorkspacesWorkspaceIdQueueRoute
   '/workspaces_/$workspaceId_/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces_/$workspaceId_/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
   '/workspaces_/$workspaceId_/peers_/$peerId': typeof WorkspacesWorkspaceIdPeersPeerIdRoute
@@ -220,11 +239,13 @@ export interface FileRouteTypes {
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
+    | '/dream-progress'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
     | '/workspaces/$workspaceId/diff'
     | '/workspaces/$workspaceId/dreams'
     | '/workspaces/$workspaceId/peers'
+    | '/workspaces/$workspaceId/queue'
     | '/workspaces/$workspaceId/sessions'
     | '/workspaces/$workspaceId/webhooks'
     | '/workspaces/$workspaceId/peers/$peerId'
@@ -242,11 +263,13 @@ export interface FileRouteTypes {
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
+    | '/dream-progress'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
     | '/workspaces/$workspaceId/diff'
     | '/workspaces/$workspaceId/dreams'
     | '/workspaces/$workspaceId/peers'
+    | '/workspaces/$workspaceId/queue'
     | '/workspaces/$workspaceId/sessions'
     | '/workspaces/$workspaceId/webhooks'
     | '/workspaces/$workspaceId/peers/$peerId'
@@ -264,11 +287,13 @@ export interface FileRouteTypes {
     | '/seed-kits'
     | '/settings'
     | '/workspaces'
+    | '/_dev/dream-progress'
     | '/workspaces_/$workspaceId'
     | '/workspaces_/$workspaceId_/conclusions'
     | '/workspaces_/$workspaceId_/diff'
     | '/workspaces_/$workspaceId_/dreams'
     | '/workspaces_/$workspaceId_/peers'
+    | '/workspaces_/$workspaceId_/queue'
     | '/workspaces_/$workspaceId_/sessions'
     | '/workspaces_/$workspaceId_/webhooks'
     | '/workspaces_/$workspaceId_/peers_/$peerId'
@@ -287,11 +312,13 @@ export interface RootRouteChildren {
   SeedKitsRoute: typeof SeedKitsRoute
   SettingsRoute: typeof SettingsRoute
   WorkspacesRoute: typeof WorkspacesRoute
+  DevDreamProgressRoute: typeof DevDreamProgressRoute
   WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
   WorkspacesWorkspaceIdConclusionsRoute: typeof WorkspacesWorkspaceIdConclusionsRoute
   WorkspacesWorkspaceIdDiffRoute: typeof WorkspacesWorkspaceIdDiffRoute
   WorkspacesWorkspaceIdDreamsRoute: typeof WorkspacesWorkspaceIdDreamsRoute
   WorkspacesWorkspaceIdPeersRoute: typeof WorkspacesWorkspaceIdPeersRoute
+  WorkspacesWorkspaceIdQueueRoute: typeof WorkspacesWorkspaceIdQueueRoute
   WorkspacesWorkspaceIdSessionsRoute: typeof WorkspacesWorkspaceIdSessionsRoute
   WorkspacesWorkspaceIdWebhooksRoute: typeof WorkspacesWorkspaceIdWebhooksRoute
   WorkspacesWorkspaceIdPeersPeerIdRoute: typeof WorkspacesWorkspaceIdPeersPeerIdRoute
@@ -372,6 +399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspacesWorkspaceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dev/dream-progress': {
+      id: '/_dev/dream-progress'
+      path: '/dream-progress'
+      fullPath: '/dream-progress'
+      preLoaderRoute: typeof DevDreamProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspaces_/$workspaceId_/webhooks': {
       id: '/workspaces_/$workspaceId_/webhooks'
       path: '/workspaces/$workspaceId/webhooks'
@@ -384,6 +418,13 @@ declare module '@tanstack/react-router' {
       path: '/workspaces/$workspaceId/sessions'
       fullPath: '/workspaces/$workspaceId/sessions'
       preLoaderRoute: typeof WorkspacesWorkspaceIdSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspaces_/$workspaceId_/queue': {
+      id: '/workspaces_/$workspaceId_/queue'
+      path: '/workspaces/$workspaceId/queue'
+      fullPath: '/workspaces/$workspaceId/queue'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdQueueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/workspaces_/$workspaceId_/peers': {
@@ -455,11 +496,13 @@ const rootRouteChildren: RootRouteChildren = {
   SeedKitsRoute: SeedKitsRoute,
   SettingsRoute: SettingsRoute,
   WorkspacesRoute: WorkspacesRoute,
+  DevDreamProgressRoute: DevDreamProgressRoute,
   WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
   WorkspacesWorkspaceIdConclusionsRoute: WorkspacesWorkspaceIdConclusionsRoute,
   WorkspacesWorkspaceIdDiffRoute: WorkspacesWorkspaceIdDiffRoute,
   WorkspacesWorkspaceIdDreamsRoute: WorkspacesWorkspaceIdDreamsRoute,
   WorkspacesWorkspaceIdPeersRoute: WorkspacesWorkspaceIdPeersRoute,
+  WorkspacesWorkspaceIdQueueRoute: WorkspacesWorkspaceIdQueueRoute,
   WorkspacesWorkspaceIdSessionsRoute: WorkspacesWorkspaceIdSessionsRoute,
   WorkspacesWorkspaceIdWebhooksRoute: WorkspacesWorkspaceIdWebhooksRoute,
   WorkspacesWorkspaceIdPeersPeerIdRoute: WorkspacesWorkspaceIdPeersPeerIdRoute,
