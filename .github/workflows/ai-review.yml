@@ -33,7 +33,7 @@ permissions:
 jobs:
   review:
     name: Claude review
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     # Skip on draft PRs and on Dependabot PRs (those have their own review
     # path and waste tokens).
     if: |

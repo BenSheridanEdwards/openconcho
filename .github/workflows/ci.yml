@@ -16,7 +16,7 @@ jobs:
   # ─── Detect path changes — drives conditional jobs ────────────────────────
   changes:
     name: Detect path changes
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     outputs:
       desktop: ${{ steps.filter.outputs.desktop }}
       web: ${{ steps.filter.outputs.web }}
@@ -34,7 +34,7 @@ jobs:
   # ─── Parallel quality jobs (each fast, focused, independent) ──────────────
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -42,7 +42,7 @@ jobs:
 
   typecheck:
     name: Type-check
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -50,7 +50,7 @@ jobs:
 
   test:
     name: Test + coverage
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -65,7 +65,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -73,7 +73,7 @@ jobs:
 
   audit:
     name: Dependency audit
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -82,7 +82,7 @@ jobs:
 
   secrets:
     name: Secret scan
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,7 +97,7 @@ jobs:
     name: Rust cargo-check (desktop)
     needs: changes
     if: needs.changes.outputs.desktop == 'true'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -124,7 +124,7 @@ jobs:
     name: All checks
     needs: [lint, typecheck, test, build, audit, secrets, cargo-check]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - name: Aggregate results
         run: |
@@ -154,7 +154,7 @@ jobs:
     name: Release
     needs: [check]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     permissions:
       contents: write
       issues: write
