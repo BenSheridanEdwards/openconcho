@@ -16,13 +16,15 @@ concurrency:
 env:
   RUNNER_TOOL_CACHE: /Users/agents/Agents/Shared/local-ci/toolcache
   AGENT_TOOLSDIRECTORY: /Users/agents/Agents/Shared/local-ci/toolcache
+  PLAYWRIGHT_BROWSERS_PATH: /Users/agents/Agents/Shared/local-ci/playwright/${{ runner.name }}
+  PLAYWRIGHT_SKIP_BROWSER_GC: "1"
 
 jobs:
   web-playwright-gate:
     name: Web Playwright gate (Mac mini)
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       CI: true
       TMPDIR: ${{ github.workspace }}/.tmp
