@@ -12,6 +12,10 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  RUNNER_TOOL_CACHE: /Users/agents/Agents/Shared/local-ci/toolcache
+  AGENT_TOOLSDIRECTORY: /Users/agents/Agents/Shared/local-ci/toolcache
+
 jobs:
   # ─── Detect path changes — drives conditional jobs ────────────────────────
   changes:
