@@ -133,24 +133,23 @@ jobs:
       - name: Aggregate results
         run: |
           set -e
-          declare -A results=(
-            [lint]="${{ needs.lint.result }}"
-            [typecheck]="${{ needs.typecheck.result }}"
-            [test]="${{ needs.test.result }}"
-            [build]="${{ needs.build.result }}"
-            [audit]="${{ needs.audit.result }}"
-            [secrets]="${{ needs.secrets.result }}"
-            [cargo-check]="${{ needs.cargo-check.result }}"
-          )
           failed=0
-          for job in "${!results[@]}"; do
-            r="${results[$job]}"
+          check_result() {
+            job="$1"
+            result="$2"
             # success → OK. skipped → OK (path-filtered out). anything else → fail.
-            case "$r" in
-              success|skipped) echo "✓ $job: $r" ;;
-              *) echo "✗ $job: $r"; failed=1 ;;
+            case "$result" in
+              success|skipped) echo "✓ $job: $result" ;;
+              *) echo "✗ $job: $result"; failed=1 ;;
             esac
-          done
+          }
+          check_result lint "${{ needs.lint.result }}"
+          check_result typecheck "${{ needs.typecheck.result }}"
+          check_result test "${{ needs.test.result }}"
+          check_result build "${{ needs.build.result }}"
+          check_result audit "${{ needs.audit.result }}"
+          check_result secrets "${{ needs.secrets.result }}"
+          check_result cargo-check "${{ needs.cargo-check.result }}"
           [ $failed -eq 0 ] || exit 1
 
   # ─── Release on push to main ──────────────────────────────────────────────
