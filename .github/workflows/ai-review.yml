@@ -30,10 +30,14 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  RUNNER_TOOL_CACHE: /Users/agents/Agents/Shared/local-ci/toolcache
+  AGENT_TOOLSDIRECTORY: /Users/agents/Agents/Shared/local-ci/toolcache
+
 jobs:
   review:
     name: Claude review
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     # Skip on draft PRs and on Dependabot PRs (those have their own review
     # path and waste tokens).
     if: |

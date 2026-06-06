@@ -12,11 +12,15 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  RUNNER_TOOL_CACHE: /Users/agents/Agents/Shared/local-ci/toolcache
+  AGENT_TOOLSDIRECTORY: /Users/agents/Agents/Shared/local-ci/toolcache
+
 jobs:
   # ─── Detect path changes — drives conditional jobs ────────────────────────
   changes:
     name: Detect path changes
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     outputs:
       desktop: ${{ steps.filter.outputs.desktop }}
       web: ${{ steps.filter.outputs.web }}
@@ -34,7 +38,7 @@ jobs:
   # ─── Parallel quality jobs (each fast, focused, independent) ──────────────
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -42,7 +46,7 @@ jobs:
 
   typecheck:
     name: Type-check
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -50,7 +54,7 @@ jobs:
 
   test:
     name: Test + coverage
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -65,7 +69,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -73,7 +77,7 @@ jobs:
 
   audit:
     name: Dependency audit
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -82,7 +86,7 @@ jobs:
 
   secrets:
     name: Secret scan
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,7 +101,7 @@ jobs:
     name: Rust cargo-check (desktop)
     needs: changes
     if: needs.changes.outputs.desktop == 'true'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -124,29 +128,28 @@ jobs:
     name: All checks
     needs: [lint, typecheck, test, build, audit, secrets, cargo-check]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     steps:
       - name: Aggregate results
         run: |
           set -e
-          declare -A results=(
-            [lint]="${{ needs.lint.result }}"
-            [typecheck]="${{ needs.typecheck.result }}"
-            [test]="${{ needs.test.result }}"
-            [build]="${{ needs.build.result }}"
-            [audit]="${{ needs.audit.result }}"
-            [secrets]="${{ needs.secrets.result }}"
-            [cargo-check]="${{ needs.cargo-check.result }}"
-          )
           failed=0
-          for job in "${!results[@]}"; do
-            r="${results[$job]}"
+          check_result() {
+            job="$1"
+            result="$2"
             # success → OK. skipped → OK (path-filtered out). anything else → fail.
-            case "$r" in
-              success|skipped) echo "✓ $job: $r" ;;
-              *) echo "✗ $job: $r"; failed=1 ;;
+            case "$result" in
+              success|skipped) echo "✓ $job: $result" ;;
+              *) echo "✗ $job: $result"; failed=1 ;;
             esac
-          done
+          }
+          check_result lint "${{ needs.lint.result }}"
+          check_result typecheck "${{ needs.typecheck.result }}"
+          check_result test "${{ needs.test.result }}"
+          check_result build "${{ needs.build.result }}"
+          check_result audit "${{ needs.audit.result }}"
+          check_result secrets "${{ needs.secrets.result }}"
+          check_result cargo-check "${{ needs.cargo-check.result }}"
           [ $failed -eq 0 ] || exit 1
 
   # ─── Release on push to main ──────────────────────────────────────────────
@@ -154,7 +157,7 @@ jobs:
     name: Release
     needs: [check]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     permissions:
       contents: write
       issues: write

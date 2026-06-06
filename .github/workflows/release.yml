@@ -11,22 +11,26 @@ on:
         required: true
         type: string
 
+env:
+  RUNNER_TOOL_CACHE: /Users/agents/Agents/Shared/local-ci/toolcache
+  AGENT_TOOLSDIRECTORY: /Users/agents/Agents/Shared/local-ci/toolcache
+
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
+          - os: mac-mini
             target: aarch64-apple-darwin
-          - os: macos-latest
+          - os: mac-mini
             target: x86_64-apple-darwin
-          - os: ubuntu-22.04
+          - os: mac-mini
             target: x86_64-unknown-linux-gnu
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
+          - os: mac-mini
+            target: x86_64-pc-mac-mini
 
-    runs-on: ${{ matrix.os }}
+    runs-on: [self-hosted, macOS, ARM64, chief-mac-mini, openconcho]
     permissions:
       contents: write
 
@@ -36,7 +40,7 @@ jobs:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'mac-mini'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf

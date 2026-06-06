@@ -5,6 +5,8 @@ runs:
   using: composite
   steps:
     - uses: pnpm/action-setup@v6
+      with:
+        dest: ${{ runner.temp }}/setup-pnpm
 
     - uses: actions/setup-node@v4
       with:
