@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SeedKitsRouteImport } from './routes/seed-kits'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,6 +19,7 @@ import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces_.
 import { Route as WorkspacesWorkspaceIdWebhooksRouteImport } from './routes/workspaces_.$workspaceId_.webhooks'
 import { Route as WorkspacesWorkspaceIdSessionsRouteImport } from './routes/workspaces_.$workspaceId_.sessions'
 import { Route as WorkspacesWorkspaceIdPeersRouteImport } from './routes/workspaces_.$workspaceId_.peers'
+import { Route as WorkspacesWorkspaceIdDiffRouteImport } from './routes/workspaces_.$workspaceId_.diff'
 import { Route as WorkspacesWorkspaceIdConclusionsRouteImport } from './routes/workspaces_.$workspaceId_.conclusions'
 import { Route as WorkspacesWorkspaceIdSessionsSessionIdRouteImport } from './routes/workspaces_.$workspaceId_.sessions_.$sessionId'
 import { Route as WorkspacesWorkspaceIdPeersPeerIdRouteImport } from './routes/workspaces_.$workspaceId_.peers_.$peerId'
@@ -31,6 +33,11 @@ const WorkspacesRoute = WorkspacesRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeedKitsRoute = SeedKitsRouteImport.update({
+  id: '/seed-kits',
+  path: '/seed-kits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -71,6 +78,12 @@ const WorkspacesWorkspaceIdPeersRoute =
     path: '/workspaces/$workspaceId/peers',
     getParentRoute: () => rootRouteImport,
   } as any)
+const WorkspacesWorkspaceIdDiffRoute =
+  WorkspacesWorkspaceIdDiffRouteImport.update({
+    id: '/workspaces_/$workspaceId_/diff',
+    path: '/workspaces/$workspaceId/diff',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WorkspacesWorkspaceIdConclusionsRoute =
   WorkspacesWorkspaceIdConclusionsRouteImport.update({
     id: '/workspaces_/$workspaceId_/conclusions',
@@ -100,10 +113,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
+  '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces/$workspaceId/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces/$workspaceId/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
@@ -115,10 +130,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
+  '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/$workspaceId/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces/$workspaceId/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces/$workspaceId/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces/$workspaceId/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces/$workspaceId/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
@@ -131,10 +148,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/explore': typeof ExploreRoute
+  '/seed-kits': typeof SeedKitsRoute
   '/settings': typeof SettingsRoute
   '/workspaces': typeof WorkspacesRoute
   '/workspaces_/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces_/$workspaceId_/conclusions': typeof WorkspacesWorkspaceIdConclusionsRoute
+  '/workspaces_/$workspaceId_/diff': typeof WorkspacesWorkspaceIdDiffRoute
   '/workspaces_/$workspaceId_/peers': typeof WorkspacesWorkspaceIdPeersRoute
   '/workspaces_/$workspaceId_/sessions': typeof WorkspacesWorkspaceIdSessionsRoute
   '/workspaces_/$workspaceId_/webhooks': typeof WorkspacesWorkspaceIdWebhooksRoute
@@ -148,10 +167,12 @@ export interface FileRouteTypes {
     | '/'
     | '/compare'
     | '/explore'
+    | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
+    | '/workspaces/$workspaceId/diff'
     | '/workspaces/$workspaceId/peers'
     | '/workspaces/$workspaceId/sessions'
     | '/workspaces/$workspaceId/webhooks'
@@ -163,10 +184,12 @@ export interface FileRouteTypes {
     | '/'
     | '/compare'
     | '/explore'
+    | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/conclusions'
+    | '/workspaces/$workspaceId/diff'
     | '/workspaces/$workspaceId/peers'
     | '/workspaces/$workspaceId/sessions'
     | '/workspaces/$workspaceId/webhooks'
@@ -178,10 +201,12 @@ export interface FileRouteTypes {
     | '/'
     | '/compare'
     | '/explore'
+    | '/seed-kits'
     | '/settings'
     | '/workspaces'
     | '/workspaces_/$workspaceId'
     | '/workspaces_/$workspaceId_/conclusions'
+    | '/workspaces_/$workspaceId_/diff'
     | '/workspaces_/$workspaceId_/peers'
     | '/workspaces_/$workspaceId_/sessions'
     | '/workspaces_/$workspaceId_/webhooks'
@@ -194,10 +219,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CompareRoute: typeof CompareRoute
   ExploreRoute: typeof ExploreRoute
+  SeedKitsRoute: typeof SeedKitsRoute
   SettingsRoute: typeof SettingsRoute
   WorkspacesRoute: typeof WorkspacesRoute
   WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
   WorkspacesWorkspaceIdConclusionsRoute: typeof WorkspacesWorkspaceIdConclusionsRoute
+  WorkspacesWorkspaceIdDiffRoute: typeof WorkspacesWorkspaceIdDiffRoute
   WorkspacesWorkspaceIdPeersRoute: typeof WorkspacesWorkspaceIdPeersRoute
   WorkspacesWorkspaceIdSessionsRoute: typeof WorkspacesWorkspaceIdSessionsRoute
   WorkspacesWorkspaceIdWebhooksRoute: typeof WorkspacesWorkspaceIdWebhooksRoute
@@ -220,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seed-kits': {
+      id: '/seed-kits'
+      path: '/seed-kits'
+      fullPath: '/seed-kits'
+      preLoaderRoute: typeof SeedKitsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -271,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspacesWorkspaceIdPeersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workspaces_/$workspaceId_/diff': {
+      id: '/workspaces_/$workspaceId_/diff'
+      path: '/workspaces/$workspaceId/diff'
+      fullPath: '/workspaces/$workspaceId/diff'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdDiffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspaces_/$workspaceId_/conclusions': {
       id: '/workspaces_/$workspaceId_/conclusions'
       path: '/workspaces/$workspaceId/conclusions'
@@ -306,10 +347,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CompareRoute: CompareRoute,
   ExploreRoute: ExploreRoute,
+  SeedKitsRoute: SeedKitsRoute,
   SettingsRoute: SettingsRoute,
   WorkspacesRoute: WorkspacesRoute,
   WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
   WorkspacesWorkspaceIdConclusionsRoute: WorkspacesWorkspaceIdConclusionsRoute,
+  WorkspacesWorkspaceIdDiffRoute: WorkspacesWorkspaceIdDiffRoute,
   WorkspacesWorkspaceIdPeersRoute: WorkspacesWorkspaceIdPeersRoute,
   WorkspacesWorkspaceIdSessionsRoute: WorkspacesWorkspaceIdSessionsRoute,
   WorkspacesWorkspaceIdWebhooksRoute: WorkspacesWorkspaceIdWebhooksRoute,

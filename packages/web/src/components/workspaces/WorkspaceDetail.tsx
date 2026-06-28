@@ -4,6 +4,7 @@ import {
 	Boxes,
 	ChevronDown,
 	CircleDot,
+	GitCompare,
 	Lightbulb,
 	MessageSquare,
 	Trash2,
