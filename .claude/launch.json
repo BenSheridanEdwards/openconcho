@@ -1,0 +1,11 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "openconcho-seed-kits",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--filter", "@openconcho/web", "dev", "--", "--port", "5176", "--strictPort"],
+			"port": 5176
+		}
+	]
+}
